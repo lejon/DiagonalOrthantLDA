@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>cc.mallet</groupId>
+  <artifactId>PCLDA</artifactId>
+  <versioning>
+    <release>4.6.4</release>
+    <versions>
+      <version>4.6.4</version>
+    </versions>
+    <lastUpdated>20161010085958</lastUpdated>
+  </versioning>
+</metadata>
