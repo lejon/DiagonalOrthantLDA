@@ -33,3 +33,7 @@ You will see printouts during unit tests, commented out code, old stuff not clea
 ```mvn package```
 
 in a shell of your choice.
+
+## Example Run
+
+```java -Xmx2g -cp target/DOLDA-1.6.0.jar  xyz.lejon.runnables.DOLDAClassificationDistribution -normalize --run_cfg=src/main/resources/configuration/films.cfg```
