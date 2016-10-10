@@ -21,15 +21,8 @@ For very large datasets you might need to add the -Xmx60g flag to Java
 Please remember that this is a research prototype and the standard disclaimers apply.
 You will see printouts during unit tests, commented out code, old stuff not cleaned out yet etc.
 
-## Repo structure
+## Repo extras
 
-- Rscripts 
-  Scripts to run seperate analysises in R.
-- RPackage
-  RPackage for the project. Just click Build -> Build & Reload to build package.
-  R-scripts are put in Rpackage/R and is documented with ROxygen. See example generate_hs_data.R
-- src 
-  Java source
 - extralibs
   Contains two external dependencies which are not available from Maven Central or any other public repo yet.
   
