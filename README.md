@@ -36,4 +36,4 @@ in a shell of your choice.
 
 ## Example Run
 
-```java -Xmx2g -cp target/DOLDA-1.6.0.jar  xyz.lejon.runnables.DOLDAClassificationDistribution -normalize --run_cfg=src/main/resources/configuration/films.cfg```
+```java -Xmx10g -cp target/DOLDA-1.6.0.jar  xyz.lejon.runnables.DOLDAClassificationDistribution -normalize --run_cfg=src/main/resources/configuration/films.cfg```
