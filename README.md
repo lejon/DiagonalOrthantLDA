@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/lejon/DOLDA.svg?branch=master)](https://travis-ci.org/lejon/DOLDA)
+[![Build Status](https://travis-ci.org/lejon/DiagonalOrthantLDA.svg?branch=master)](https://travis-ci.org/lejon/DiagonalOrthantLDA)
 
 # DOLDA
 
