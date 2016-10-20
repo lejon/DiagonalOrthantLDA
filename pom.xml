@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>cc.mallet</groupId>
 			<artifactId>PCLDA</artifactId>
-			<version>4.6.4</version>
+			<version>4.6.6</version>
 		</dependency>
 	</dependencies>
 	
