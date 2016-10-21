@@ -4,7 +4,8 @@
 	<groupId>xyz.lejon</groupId>
 	<artifactId>DOLDA</artifactId>
 	<!-- v1.6.0: First public release -->
-	<version>1.6.0</version>
+	<!-- v1.6.1: Use and adapt to latest PCLDA API -->
+	<version>1.6.1</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 

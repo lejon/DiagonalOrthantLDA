@@ -305,4 +305,34 @@ public class DOLDAPlainLDAConfiguration extends SubConfig implements LDAConfigur
 	public Integer getTfIdfVocabSize(int arg0) {
 		return parent.getTfIdfVocabSize(arg0);
 	}
+
+	@Override
+	public String getDocLengthsFilename() {
+		return parent.getDocLengthsFilename();
+	}
+
+	@Override
+	public String getTermFrequencyFilename() {
+		return parent.getTermFrequencyFilename();
+	}
+
+	@Override
+	public String getVocabularyFilename() {
+		return parent.getVocabularyFilename();
+	}
+
+	@Override
+	public boolean saveDocLengths(boolean arg0) {
+		return parent.saveDocLengths(arg0);
+	}
+
+	@Override
+	public boolean saveTermFrequencies(boolean arg0) {
+		return parent.saveTermFrequencies(arg0);
+	}
+
+	@Override
+	public boolean saveVocabulary(boolean arg0) {
+		return parent.saveVocabulary(arg0);
+	}
 }

@@ -186,4 +186,16 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	public int getNrTopWords(int arg0);
 
 	public Integer getTfIdfVocabSize(int arg0);
+
+	String getVocabularyFilename();
+
+	boolean saveVocabulary(boolean b);
+
+	boolean saveTermFrequencies(boolean b);
+
+	String getTermFrequencyFilename();
+
+	boolean saveDocLengths(boolean b);
+
+	String getDocLengthsFilename();
 }

@@ -584,4 +584,43 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 	public Integer getTfIdfVocabSize(int defaultValue) {
 		return getInteger("tfidf_vocab_size",defaultValue);
 	}
+	
+	@Override
+	public boolean saveVocabulary(boolean defaultValue) {
+		String key = "save_vocabulary";
+		Object prop = super.getProperty(translateKey(key));
+		if(prop==null) return defaultValue;
+		return getBooleanProperty(key);
+	}
+	
+	@Override
+	public String getVocabularyFilename() {
+		return getStringProperty("vocabulary_filename");
+	}
+
+	@Override
+	public boolean saveTermFrequencies(boolean defaultValue) {
+		String key = "save_term_frequencies";
+		Object prop = super.getProperty(translateKey(key));
+		if(prop==null) return defaultValue;
+		return getBooleanProperty(key);
+	}
+
+	@Override
+	public String getTermFrequencyFilename() {
+		return getStringProperty("term_frequencies_filename");
+	}
+
+	@Override
+	public boolean saveDocLengths(boolean defaultValue) {
+		String key = "save_doc_lengths";
+		Object prop = super.getProperty(translateKey(key));
+		if(prop==null) return defaultValue;
+		return getBooleanProperty(key);
+	}
+
+	@Override
+	public String getDocLengthsFilename() {
+		return getStringProperty("doc_lengths_filename");
+	}
 }

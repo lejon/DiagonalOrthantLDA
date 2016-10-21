@@ -282,6 +282,41 @@ public class SLDA {
 					ExperimentUtils.saveDocTopicMeans(lgDir, dolda.getZbar(), config.getDocumentTopicMeansOutputFilename());
 				}
 				
+				
+					if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
+						String docTopicMeanFn = config.getPhiMeansOutputFilename();
+						double [][] means = dolda.getPhiMeans();
+						if(means!=null) {
+						LDAUtils.writeASCIIDoubleMatrix(means, lgDir.getAbsolutePath() + "/" + docTopicMeanFn, ",");
+						} else {
+							System.err.println("WARNING: ParallelLDA: No Phi means where sampled, not saving Phi means! This is likely due to a combination of configuration settings of phi_mean_burnin, phi_mean_thin and save_phi_mean");
+						}
+						// No big point in saving Phi without the vocabulary
+						String vocabFn = config.getVocabularyFilename();
+						if(vocabFn==null || vocabFn.length()==0) { vocabFn = "phi_vocabulary.txt"; }
+						String [] vobaculary = LDAUtils.extractVocabulaty(textData.getDataAlphabet());
+						LDAUtils.writeStringArray(vobaculary,lgDir.getAbsolutePath() + "/" + vocabFn);
+					}
+
+				if(config.saveVocabulary(false)) {
+					String vocabFn = config.getVocabularyFilename();
+					String [] vobaculary = LDAUtils.extractVocabulaty(textData.getDataAlphabet());
+					LDAUtils.writeStringArray(vobaculary,lgDir.getAbsolutePath() + "/" + vocabFn);
+				}
+				
+				if(config.saveTermFrequencies(false)) {
+					String termCntFn = config.getTermFrequencyFilename();
+					int [] freqs = LDAUtils.extractTermCounts(textData);
+					LDAUtils.writeIntArray(freqs, lgDir.getAbsolutePath() + "/" + termCntFn);
+				}
+				
+				if(config.saveDocLengths(false)) {
+					String docLensFn = config.getDocLengthsFilename();
+					int [] freqs = LDAUtils.extractDocLength(textData);
+					LDAUtils.writeIntArray(freqs, lgDir.getAbsolutePath() + "/" + docLensFn);
+					
+				}
+				
 				/*
 				if(config.doPlot()) {
 					ClassificationResultPlot.plot2D(labels, xs);					
