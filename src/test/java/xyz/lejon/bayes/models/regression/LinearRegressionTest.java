@@ -208,6 +208,226 @@ public class LinearRegressionTest {
 		System.out.println();
 		assertTrue(ksResult);
 	}
+	
+	@Test
+	public void testOLSSim() throws IOException, ParseException, ConfigurationException {
+		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
+		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		config.setLoggingUtil(lu);
+
+		String conf = "OLS_Simulated";
+
+		lu.checkCreateAndSetSubLogDir(conf);
+		config.activateSubconfig(conf);
+
+		System.out.println("Running SubConf: " + conf);
+		System.out.println("Using Config: " + config.whereAmI());
+		String dataset_fn = config.getDatasetFilename();
+		System.out.println("Using dataset: " + dataset_fn);
+		config.loadTrainingSet();
+		config.loadTestSet();
+		System.out.println("Using lag: " + config.getLag());
+		System.out.println("Using burnIn: " + config.getBurnIn());
+
+		double [][] xs = config.getX();
+		double [] ys = config.getY();		
+
+		DoubleMatrix Xd = new DoubleMatrix(xs);
+		DoubleMatrix Yd = new DoubleMatrix(ys);
+		DoubleMatrix Xdt = (new DoubleMatrix(xs)).transpose();
+		DoubleMatrix XtX = Xdt.mmul(Xd);
+
+		
+		// OLS estimate
+		DoubleMatrix betahat = BlasOps.blasInvert(XtX).mmul(Xdt).mmul(Yd);
+		double [] betas = betahat.toArray();
+		System.out.println("BetaHat = " + MatrixOps.arrToStr(betas));
+		
+		// b0 <- 17, b1 <- 0.5, b2 <- 0.037, b3 <- -5.2, sigma <- 1.4
+		double [] betaTrue = {17,0.5,0.037,-5.2};
+		
+
+		KolmogorovSmirnovTest ks = new KolmogorovSmirnovTest();
+		boolean ksResult = ks.kolmogorovSmirnovTest(betas, betaTrue) > 0.00001;
+		if(ksResult) {
+			System.out.println("OK!");	
+		} else {
+			System.out.println("NOK!");
+		}
+		System.out.println("Draws:");
+		for (int j = 0; j < betaTrue.length; j++) {
+			System.out.print(betaTrue[j]  + "<=>" + betas[j] + ", ");
+		}
+		System.out.println();
+		assertTrue(ksResult);
+	}
+	
+	@Test
+	public void testLinearRegressionNormalSimulated() throws IOException, ParseException, ConfigurationException {
+		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
+		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		config.setLoggingUtil(lu);
+
+		String conf = "OLS_Simulated";
+
+		lu.checkCreateAndSetSubLogDir(conf);
+		config.activateSubconfig(conf);
+
+		System.out.println("Running SubConf: " + conf);
+		System.out.println("Using Config: " + config.whereAmI());
+		String dataset_fn = config.getDatasetFilename();
+		System.out.println("Using dataset: " + dataset_fn);
+		config.loadTrainingSet();
+		config.loadTestSet();
+		System.out.println("Using lag: " + config.getLag());
+		System.out.println("Using burnIn: " + config.getBurnIn());
+
+		double [][] xs = config.getX();
+		double [] ys = config.getY();		
+
+		LinearRegression linearRegression = ModelFactory.get(config, xs, ys);
+
+		System.out.println("Using sampler: " + linearRegression.getClass().getName());
+		System.out.println("X is: " + MatrixOps.doubleArrayToPrintString(xs, 5));
+		System.out.println("y is: " + MatrixOps.arrToStr(ys, 10));
+
+		linearRegression.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));
+
+		double [] betas = linearRegression.getBetas();
+
+
+		// b0 <- 17, b1 <- 0.5, b2 <- 0.037, b3 <- -5.2, sigma <- 1.4
+		double [] betaTrue = {17,0.5,0.037,-5.2};
+
+
+		KolmogorovSmirnovTest ks = new KolmogorovSmirnovTest();
+		boolean ksResult = ks.kolmogorovSmirnovTest(betas, betaTrue) > 0.00001;
+		if(ksResult) {
+			System.out.println("OK!");	
+		} else {
+			System.out.println("NOK!");
+		}
+		System.out.println("Draws:");
+		for (int j = 0; j < betaTrue.length; j++) {
+			System.out.println(betaTrue[j]  + "<=>" + betas[j] + ", ");
+		}
+		System.out.println();
+		assertTrue(ksResult);
+	}
+		
+	@Test
+	public void testLinearRegressionHSSimulatedEJML() throws IOException, ParseException, ConfigurationException {
+		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
+		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		config.setLoggingUtil(lu);
+
+		String conf = "OLS_Simulated";
+
+		lu.checkCreateAndSetSubLogDir(conf);
+		config.activateSubconfig(conf);
+
+		System.out.println("Running SubConf: " + conf);
+		System.out.println("Using Config: " + config.whereAmI());
+		String dataset_fn = config.getDatasetFilename();
+		System.out.println("Using dataset: " + dataset_fn);
+		config.loadTrainingSet();
+		config.loadTestSet();
+		System.out.println("Using lag: " + config.getLag());
+		System.out.println("Using burnIn: " + config.getBurnIn());
+
+		double [][] xs = config.getX();
+		double [] ys = config.getY();		
+
+		LinearRegression linearRegression = new LinearRegressionEJMLHSPrior(config, xs, ys);
+
+		System.out.println("Using sampler: " + linearRegression.getClass().getName());
+		System.out.println("X is: " + MatrixOps.doubleArrayToPrintString(xs, 5));
+		System.out.println("y is: " + MatrixOps.arrToStr(ys, 10));
+
+		linearRegression.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));
+
+		double [] betas = linearRegression.getBetas();
+
+
+		// b0 <- 17, b1 <- 0.5, b2 <- 0.037, b3 <- -5.2, sigma <- 1.4
+		double [] betaTrue = {17,0.5,0.037,-5.2};
+
+
+		KolmogorovSmirnovTest ks = new KolmogorovSmirnovTest();
+		boolean ksResult = ks.kolmogorovSmirnovTest(betas, betaTrue) > 0.00001;
+		if(ksResult) {
+			System.out.println("OK!");	
+		} else {
+			System.out.println("NOK!");
+		}
+		System.out.println("Draws:");
+		for (int j = 0; j < betaTrue.length; j++) {
+			System.out.print(betaTrue[j]  + "<=>" + betas[j] + ", ");
+		}
+		System.out.println();
+		assertTrue(ksResult);
+	}
+	
+	@Test
+	public void testLinearRegressionHSSimulatedBLAS() throws IOException, ParseException, ConfigurationException {
+		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
+		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		config.setLoggingUtil(lu);
+
+		String conf = "OLS_Simulated";
+
+		lu.checkCreateAndSetSubLogDir(conf);
+		config.activateSubconfig(conf);
+
+		System.out.println("Running SubConf: " + conf);
+		System.out.println("Using Config: " + config.whereAmI());
+		String dataset_fn = config.getDatasetFilename();
+		System.out.println("Using dataset: " + dataset_fn);
+		config.loadTrainingSet();
+		config.loadTestSet();
+		System.out.println("Using lag: " + config.getLag());
+		System.out.println("Using burnIn: " + config.getBurnIn());
+
+		double [][] xs = config.getX();
+		double [] ys = config.getY();		
+
+		LinearRegression linearRegression = new LinearRegressionJBlasHSPrior(config, xs, ys);
+
+		System.out.println("Using sampler: " + linearRegression.getClass().getName());
+		System.out.println("X is: " + MatrixOps.doubleArrayToPrintString(xs, 5));
+		System.out.println("y is: " + MatrixOps.arrToStr(ys, 10));
+
+		linearRegression.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));
+
+		double [] betas = linearRegression.getBetas();
+
+
+		// b0 <- 17, b1 <- 0.5, b2 <- 0.037, b3 <- -5.2, sigma <- 1.4
+		double [] betaTrue = {17,0.5,0.037,-5.2};
+
+
+		KolmogorovSmirnovTest ks = new KolmogorovSmirnovTest();
+		boolean ksResult = ks.kolmogorovSmirnovTest(betas, betaTrue) > 0.00001;
+		if(ksResult) {
+			System.out.println("OK!");	
+		} else {
+			System.out.println("NOK!");
+		}
+		System.out.println("Draws:");
+		for (int j = 0; j < betaTrue.length; j++) {
+			System.out.print(betaTrue[j]  + "<=>" + betas[j] + ", ");
+		}
+		System.out.println();
+		assertTrue(ksResult);
+	}
 
 	@Test
 	public void testBetas() {

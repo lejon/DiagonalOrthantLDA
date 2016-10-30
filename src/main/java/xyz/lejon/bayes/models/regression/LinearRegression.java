@@ -66,6 +66,7 @@ public abstract class LinearRegression {
 	
 	public void sample(int iterations) {	
 		iterationsToRun = iterations;
+		iterinter = iterationsToRun / 5;
 		for (int iter = 0; iter < iterations; iter++) {
 			currentIteration = iter;
 			if(iter % iterinter == 0) {

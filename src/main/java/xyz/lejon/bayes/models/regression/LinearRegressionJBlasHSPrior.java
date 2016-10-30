@@ -23,7 +23,6 @@ import xyz.lejon.utils.MatrixOps;
 public class LinearRegressionJBlasHSPrior extends LinearRegressionHSPrior {
 	protected DoubleMatrix Xd;
 	protected DoubleMatrix XtX;
-	protected DoubleMatrix muTilde;
 	protected DoubleMatrix ys;
 	protected DoubleMatrix Xdt;
 	protected DoubleMatrix yty;
@@ -47,7 +46,7 @@ public class LinearRegressionJBlasHSPrior extends LinearRegressionHSPrior {
 		// OLS estimate
 		//DoubleMatrix betahat = BlasOps.blasInvert(XtX).mmul(Xdt).mmul(this.ys);
 		//betas = betahat.toArray();
-		System.out.println("BetaHat = " + MatrixOps.arrToStr(betas));
+		//System.out.println("BetaHat = " + MatrixOps.arrToStr(betas));
 				
 		myPrecision = new DoubleMatrix(XtX.rows,XtX.columns);
 		myPrecision.copy(XtX);
@@ -90,6 +89,7 @@ public class LinearRegressionJBlasHSPrior extends LinearRegressionHSPrior {
 		// Rebuild updated precision matrix
 		for (int i = 0; i < myPrecision.rows; i++) {
 			double update;
+			// Don't regularize the intercept
 			if(i==0 && useIntercept) {
 				update = c;
 			} else {
@@ -136,40 +136,4 @@ public class LinearRegressionJBlasHSPrior extends LinearRegressionHSPrior {
 		}
 		return betas;
 	}
-	
-	public double printSampledTaus(int limit) {
-		double tot = 0.0;
-		int cnt = 0;
-		System.out.println("Sampled Taus are: ");
-		for(Double t : sampledTaus) {
-			System.out.print(t + ", ");
-			tot += t;
-			cnt++;
-		}
-		return tot / cnt;
-	}
-
-	public double [][] printSampledLambdas(int limit) {
-		double [][] res = new double[sampledLambdas.size()][];
-		int sampleCnt = 0;
-		System.out.println("Sampled Lambdas are: ");
-		for(double [] t : sampledLambdas) {
-			boolean doPrint = sampledLambdas.size()-sampleCnt<limit;
-			res[sampleCnt++] = t;
-			if(doPrint)
-				System.out.println(MatrixOps.arrToStr(t, "[" + sampleCnt + "] Lambda "));
-		}
-		return res;
-	}
-	
-	public void postSample() {
-		super.postSample();
-		double tmean = printSampledTaus(10);
-		double [][] sampledLs = printSampledLambdas(10);
-		System.out.println();
-		System.out.println("Lambda mean=" + MatrixOps.arrToStr(MatrixOps.colMeans(sampledLs)));
-		System.out.println("Tau mean=" + tmean);
-		System.out.println();
-	}
-
 }
