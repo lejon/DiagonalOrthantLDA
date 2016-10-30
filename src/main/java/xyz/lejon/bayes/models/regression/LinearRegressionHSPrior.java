@@ -66,15 +66,15 @@ public abstract class LinearRegressionHSPrior extends LinearRegression {
 		return res;
 	}
 	
-	public void postSample() {
-		super.postSample();
-		double tmean = printSampledTaus(10);
-		System.out.println();
-		double [][] sampledLs = printSampledLambdas(10);
-		System.out.println();
-		System.out.println("Lambda mean=" + MatrixOps.arrToStr(MatrixOps.colMeans(sampledLs)));
-		System.out.println("Tau mean=" + tmean);
-		System.out.println();
-	}
+//	public void postSample() {
+//		super.postSample();
+//		double tmean = printSampledTaus(10);
+//		System.out.println();
+//		double [][] sampledLs = printSampledLambdas(10);
+//		System.out.println();
+//		System.out.println("Lambda mean=" + MatrixOps.arrToStr(MatrixOps.colMeans(sampledLs)));
+//		System.out.println("Tau mean=" + tmean);
+//		System.out.println();
+//	}
 
 }
