@@ -85,6 +85,7 @@ public class LinearRegressionXV {
 			PlainCrossValidationIterator cvIter = new PlainCrossValidationIterator(allXs,allYs,folds);
 
 			double [] mses = new double[folds];
+			double [] genErr = new double[folds];
 			long t1 = System.currentTimeMillis();
 			for (int fold = 0; fold < folds; fold++) {					
 				double [][] xs = cvIter.nextTrainX();
@@ -101,10 +102,13 @@ public class LinearRegressionXV {
 
 				double [] betas = linearRegression.getBetas();
 				
-				double mse = evaluate(cvIter.nextTestY(), cvIter.nextTestX(), betas, config.getUseIntercept());
+				double mse = evaluate(ys, xs, betas, config.getUseIntercept());
 				mses[fold] = mse;
+				double generalizationError = evaluate(cvIter.nextTestY(), cvIter.nextTestX(), betas, config.getUseIntercept());
+				genErr[fold] = generalizationError;
 
-				System.out.println("MSE for: " + linearRegression.getClass().getName() + " => " + mse);
+				System.out.println("MSE on trainingset: " + linearRegression.getClass().getSimpleName() + " => " + mse);
+				System.out.println("MSE on testset    : " + linearRegression.getClass().getSimpleName() + " => " + generalizationError);
 				MatrixOps.noDigits = 10;
 				String [] coeffs = config.getTrainingSet().getTransformedColNames();
 				printBetaCoefficients(coeffs, betas);				
@@ -157,10 +161,16 @@ public class LinearRegressionXV {
 				meanMse += mses[i];
 			}
 			meanMse /= folds;
-			System.out.println("Mean MSE of " + folds + " folds is: " + meanMse);
+			double meanGenErr = 0.0;
+			for (int i = 0; i < mses.length; i++) {
+				meanGenErr += genErr[i];
+			}
+			meanGenErr /= folds;
+			System.out.println("Mean MSE on training set evaluated on " + folds + " folds is: " + meanMse);
+			System.out.println("Mean MSE on test     set evaluated on " + folds + " folds is: " + meanGenErr);
 		}
 		// Ensure that we exit even if there are non-daemon threads hanging around
-		System.err.println("Finished Exiting...");
+		System.err.println("Finished! Exiting...");
 		System.exit(0);
 	}
 
@@ -201,14 +211,13 @@ public class LinearRegressionXV {
 			double y_hat = 0.0;
 			for (int j = 0; j < nextTestX[i].length; j++) {
 				if(j == 0 && useIntercept) { 
-					y_hat += nextTestX[i][j];
+					y_hat += betas[j];
 					continue;
 				}
-				y_hat += nextTestX[i][j] * betas[j];	
+				y_hat += nextTestX[i][j] * betas[j];
 			}
 			double error = (nextTestY[i]-y_hat); 
 			mse += error*error; 
-			
 		}
 		return mse / nextTestY.length;
 	}
