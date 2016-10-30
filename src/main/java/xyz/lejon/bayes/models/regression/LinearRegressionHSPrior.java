@@ -24,8 +24,8 @@ public abstract class LinearRegressionHSPrior extends LinearRegression {
 	public static double tau0 = 1.0;
 	double [] Lambda;
 	
-	static List<double []> sampledLambdas = new ArrayList<double []>();
-	static List<Double> sampledTaus       = new ArrayList<Double>();
+	List<double []> sampledLambdas = new ArrayList<double []>();
+	List<Double> sampledTaus       = new ArrayList<Double>();
 
 	public LinearRegressionHSPrior(OLSConfiguration config, double[][] xs, double[] ys) throws IOException {
 		super(config, xs, ys);
@@ -46,7 +46,7 @@ public abstract class LinearRegressionHSPrior extends LinearRegression {
 		int cnt = 0;
 		System.out.println("Sampled Taus are: ");
 		for(Double t : sampledTaus) {
-			System.out.print(t + ", ");
+			if(cnt<limit) System.out.print(t + ", ");
 			tot += t;
 			cnt++;
 		}
@@ -69,6 +69,7 @@ public abstract class LinearRegressionHSPrior extends LinearRegression {
 	public void postSample() {
 		super.postSample();
 		double tmean = printSampledTaus(10);
+		System.out.println();
 		double [][] sampledLs = printSampledLambdas(10);
 		System.out.println();
 		System.out.println("Lambda mean=" + MatrixOps.arrToStr(MatrixOps.colMeans(sampledLs)));
