@@ -198,4 +198,10 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	boolean saveDocLengths(boolean b);
 
 	String getDocLengthsFilename();
+
+	double getLambda(double lambdaDefault);
+
+	String getDocumentTopicThetaOutputFilename();
+
+	boolean saveDocumentThetaEstimate();
 }

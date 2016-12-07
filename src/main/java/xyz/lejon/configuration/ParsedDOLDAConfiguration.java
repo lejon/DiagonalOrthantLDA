@@ -623,4 +623,20 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 	public String getDocLengthsFilename() {
 		return getStringProperty("doc_lengths_filename");
 	}
+	
+	@Override
+	public double getLambda(double defaultValue) {
+		return getDouble("lambda",defaultValue);
+	}
+	
+	@Override
+	public String getDocumentTopicThetaOutputFilename() {
+		return getStringProperty("doc_topic_theta_filename");
+	}
+
+	@Override
+	public boolean saveDocumentThetaEstimate() {
+		String key = "save_doc_theta_estimate";
+		return getBooleanProperty(key);
+	}
 }
