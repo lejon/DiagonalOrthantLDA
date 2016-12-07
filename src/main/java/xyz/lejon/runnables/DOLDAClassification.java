@@ -249,6 +249,21 @@ public class DOLDAClassification {
 							dolda.getAlphabet()));
 					out.println(topWords);
 					System.out.println("Top words are: \n" + topWords);
+					
+					out.flush();
+					out.close();
+
+					out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.xt");
+					
+					topWords = LDAUtils.formatTopWords(LDAUtils.getTopRelevanceWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							config.getBeta(LDAConfiguration.BETA_DEFAULT),
+							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+							dolda.getAlphabet()));
+					out.println(topWords);
+					System.out.println("Relevance words are: \n" + topWords);
 				} else { 
 					out.println("No text data used");
 				}

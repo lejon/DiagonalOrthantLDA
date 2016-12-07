@@ -344,11 +344,51 @@ public class SLDA {
 							dolda.getNoTopics(), 
 							dolda.getTypeTopicMatrix(), 
 							dolda.getAlphabet()));
-					out.println(topWords);
 					System.out.println("Top words are: \n" + topWords);
+					
+					topWords = LDAUtils.formatTopWordsAsCsv(LDAUtils.getTopWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							dolda.getAlphabet()));
+					out.println(topWords);
+					out.flush();
+					out.close();
+
+					out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.xt");
+					
+					topWords = LDAUtils.formatTopWords(LDAUtils.getTopRelevanceWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							config.getBeta(LDAConfiguration.BETA_DEFAULT),
+							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+							dolda.getAlphabet()));
+					System.out.println("Relevance words are: \n" + topWords);
+					
+					topWords = LDAUtils.formatTopWordsAsCsv(LDAUtils.getTopRelevanceWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							config.getBeta(LDAConfiguration.BETA_DEFAULT),
+							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+							dolda.getAlphabet()));
+					out.println(topWords);
 				} else { 
 					out.println("No text data used");
 				}
+				out.flush();
+				out.close();
+				
+				out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.txt");
+				out.println(LDAUtils.formatTopWordsAsCsv(
+						LDAUtils.getTopRelevanceWords(requestedWords, 
+								dolda.getAlphabet().size(), 
+								dolda.getNoTopics(), 
+								dolda.getTypeTopicMatrix(), 
+								config.getBeta(LDAConfiguration.BETA_DEFAULT),
+								config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+								dolda.getAlphabet())));
 				out.flush();
 				out.close();
 
