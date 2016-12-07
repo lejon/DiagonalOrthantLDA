@@ -336,9 +336,14 @@ public class SLDA {
 				lu.dynamicLogRun("Runs", t, cp, (Configuration) config, null, 
 						SLDA.class.getName(), "-results", "HEADING", "DOLDA", numberOfRuns, metadata);
 				
+				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
 				PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.txt");
 				if(textData!=null) {
-					String topWords = LDAUtils.formatTopWords(dolda.getTopWords(50));
+					String topWords = LDAUtils.formatTopWords(LDAUtils.getTopWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							dolda.getAlphabet()));
 					out.println(topWords);
 					System.out.println("Top words are: \n" + topWords);
 				} else { 

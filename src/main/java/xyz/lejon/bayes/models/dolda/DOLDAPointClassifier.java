@@ -22,6 +22,7 @@ import xyz.lejon.utils.Timer;
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.Trial;
+import cc.mallet.configuration.LDAConfiguration;
 import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.AlphabetCarrying;
@@ -412,9 +413,19 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		pw.flush();
 		pw.close();
 		
+		int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
+		if(requestedWords>dolda.getAlphabet().size()) {
+			requestedWords = dolda.getAlphabet().size();
+		}
+
 		PrintWriter topOut = new PrintWriter(lgDir.getAbsolutePath() + "/fold-" + fold + "-TopWords.txt");
 		if(!fakeTextData) {
-			String topWords = LDAUtils.formatTopWords(dolda.getTopWords(50));
+			String topWords = LDAUtils.formatTopWords(
+					LDAUtils.getTopWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							dolda.getAlphabet()));
 			topOut.println(topWords);
 			System.out.println("Top words are: \n" + topWords);
 		} else { 

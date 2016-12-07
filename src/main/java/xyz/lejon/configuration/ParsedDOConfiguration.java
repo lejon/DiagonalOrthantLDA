@@ -149,22 +149,10 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		return getBooleanProperty(key);
 	}
 
-	boolean getBooleanProperty(String key) {
-		String stringProperty = getStringProperty(key);
-		return (stringProperty!=null) && (stringProperty.trim().equalsIgnoreCase("true") || stringProperty.trim().equalsIgnoreCase("yes") || stringProperty.trim().equals("1"));
-	}
-
-	boolean hasBooleanProperty(String key) {
-		String stringProperty = getStringProperty(key);
-		return (stringProperty!=null) && (stringProperty.trim().equalsIgnoreCase("true") || stringProperty.trim().equalsIgnoreCase("yes") || stringProperty.trim().equals("1"));
-	}
-
-
 	public boolean getPrintPhi() {
 		String key = "print_phi";
 		return getBooleanProperty(key);
 	}
-
 
 	public boolean getMeasureTiming() {
 		String key = "measure_timing";

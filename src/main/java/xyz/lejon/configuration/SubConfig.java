@@ -122,6 +122,28 @@ public class SubConfig extends HierarchicalINIConfiguration {
 	public Object getConfProperty(String key) {
 		return super.getProperty(translateKey(key));
 	}
+	
+	/**
+	 * This method returns null if the property is not set in the config file
+	 * 
+	 * @param key
+	 * @return null if not set, otherwise value from config file
+	 */
+	public Boolean getBooleanPropertyOrNull(String key) {
+		String stringProperty = getStringProperty(key);
+		if(stringProperty==null) return null;
+		return (stringProperty.trim().equalsIgnoreCase("true") || stringProperty.trim().equalsIgnoreCase("yes") || stringProperty.trim().equals("1"));
+	}
+	
+	public boolean hasBooleanProperty(String key) {
+		String stringProperty = getStringProperty(key);
+		return (stringProperty!=null) && (stringProperty.trim().equalsIgnoreCase("true") || stringProperty.trim().equalsIgnoreCase("yes") || stringProperty.trim().equals("1"));
+	}
+
+	public boolean getBooleanProperty(String key) {
+		String stringProperty = getStringProperty(key);
+		return (stringProperty!=null) && (stringProperty.trim().equalsIgnoreCase("true") || stringProperty.trim().equalsIgnoreCase("yes") || stringProperty.trim().equals("1"));
+	}
 
 	@Override
 	public boolean getBoolean(String key) {

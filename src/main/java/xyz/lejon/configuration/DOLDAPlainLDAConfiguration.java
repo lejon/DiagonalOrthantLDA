@@ -335,4 +335,21 @@ public class DOLDAPlainLDAConfiguration extends SubConfig implements LDAConfigur
 	public boolean saveVocabulary(boolean arg0) {
 		return parent.saveVocabulary(arg0);
 	}
+	
+	@Override
+	public double getLambda(double defaultValue) {
+		return getDouble("lambda",defaultValue);
+	}
+	
+	@Override
+	public String getDocumentTopicThetaOutputFilename() {
+		return getStringProperty("doc_topic_theta_filename");
+	}
+
+	@Override
+	public boolean saveDocumentThetaEstimate() {
+		String key = "save_doc_theta_estimate";
+		return getBooleanProperty(key);
+
+	}
 }

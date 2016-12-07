@@ -28,6 +28,7 @@ import xyz.lejon.utils.LoggingUtils;
 import xyz.lejon.utils.MatrixOps;
 import xyz.lejon.utils.Timer;
 import cc.mallet.classify.Trial;
+import cc.mallet.configuration.LDAConfiguration;
 import cc.mallet.util.LDAUtils;
 import cc.mallet.types.InstanceList;
 
@@ -255,9 +256,14 @@ public class CompleteDOLDAClassification {
 			lu.dynamicLogRun("Runs", t, cp, (Configuration) config, null, 
 					this.getClass().getName(), this.getClass().getSimpleName() + "-results", "HEADING", "DOLDA", 1, metadata);
 
+			int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
 			PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.txt");
 			if(textData!=null) {
-				String topWords = LDAUtils.formatTopWords(dolda.getTopWords(50));
+				String topWords = LDAUtils.formatTopWords(LDAUtils.getTopWords(requestedWords, 
+						dolda.getAlphabet().size(), 
+						dolda.getNoTopics(), 
+						dolda.getTypeTopicMatrix(), 
+						dolda.getAlphabet()));
 				out.println(topWords);
 				System.out.println("Top words are: \n" + topWords);
 			} else { 

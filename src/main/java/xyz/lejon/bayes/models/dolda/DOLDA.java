@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 
 import cc.mallet.topics.AbortableSampler;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 
 public interface DOLDA extends AbortableSampler {
@@ -15,8 +16,6 @@ public interface DOLDA extends AbortableSampler {
 	void sample (int iterations) throws IOException;
 
 	int getNoTopics();
-
-	String[][] getTopWords(int i);
 
 	double[][] getBetas();
 
@@ -31,4 +30,8 @@ public interface DOLDA extends AbortableSampler {
 	double[][] getPhiMeans();
 
 	double[][] getZbar();
+
+	Alphabet getAlphabet();
+
+	int[][] getTypeTopicMatrix();
 }
