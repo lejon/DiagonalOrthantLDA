@@ -352,4 +352,14 @@ public class DOLDAPlainLDAConfiguration extends SubConfig implements LDAConfigur
 		return getBooleanProperty(key);
 
 	}
+	
+	@Override
+	public String getDirichletSamplerBuilderClass(String samplerBuilderClassName) {
+		return LDAConfiguration.SPARSE_DIRICHLET_SAMPLER_BULDER_DEFAULT;
+	}
+
+	@Override
+	public int getAliasPoissonThreshold(int aliasPoissonDefaultThreshold) {
+		return LDAConfiguration.ALIAS_POISSON_DEFAULT_THRESHOLD;
+	}
 }
