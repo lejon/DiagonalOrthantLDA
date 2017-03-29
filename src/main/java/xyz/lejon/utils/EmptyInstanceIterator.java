@@ -26,7 +26,7 @@ public class EmptyInstanceIterator implements Iterator<Instance> {
 	{
 		String instanceId = ids[index];
 		String instanceLabel = labels[index++];
-		Instance fakeInstance = new Instance (new SimpleStringData(dataAlphabet, ""), instanceLabel, instanceId, null);
+		Instance fakeInstance = new Instance (new SimpleStringData(dataAlphabet, ""), targetAlphabet.lookupLabel(instanceLabel), instanceId, null);
 		fakeInstance.setLabeling(targetAlphabet.lookupLabel(instanceLabel));
 		return fakeInstance;
 	}
