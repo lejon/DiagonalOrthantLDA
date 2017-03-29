@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/lejon/DiagonalOrthantLDA.svg?branch=master)](https://travis-ci.org/lejon/DiagonalOrthantLDA)
 
+![YourKit](https://www.yourkit.com/images/yklogo.png)
+
 # DOLDA
 
 Supervised LDA using DO-Probit
@@ -35,5 +37,15 @@ You will see printouts during unit tests, commented out code, old stuff not clea
 in a shell of your choice.
 
 ## Example Run
-
 ```java -Xmx10g -cp target/DOLDA-1.6.0.jar  xyz.lejon.runnables.DOLDAClassificationDistribution -normalize --run_cfg=src/main/resources/configuration/films.cfg```
+
+Acknowledgements
+----------------
+I'm a very satisfied user of the YourKit profiler. A Great product with great support. It has been sucessfully used for profiling in this project.
+
+![YourKit](https://www.yourkit.com/images/yklogo.png)
+
+YourKit supports open source projects with its full-featured Java Profiler.
+YourKit, LLC is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/)
+and [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
+innovative and intelligent tools for profiling Java and .NET applications.
