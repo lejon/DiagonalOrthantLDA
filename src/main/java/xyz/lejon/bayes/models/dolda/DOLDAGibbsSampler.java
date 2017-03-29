@@ -132,8 +132,10 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 
 	@Override
 	public void addInstances(InstanceList instances) {
-		super.addInstances(instances);
-		computeDocTopicAverages();
+		if(instances.getAlphabet().size()>0) {
+			super.addInstances(instances);
+			computeDocTopicAverages();
+		}
 	}
 
 	public double [][] getSupervsedTopicIndicatorMeans() {
