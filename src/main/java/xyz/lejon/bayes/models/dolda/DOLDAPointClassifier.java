@@ -70,7 +70,6 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 	double [][] sampledSupervisedTestTopics;
 
 	boolean fakeTextData = false;
-	LabelAlphabet fakeTargetAlphabet = new LabelAlphabet();
 
 	boolean abort = false;
 	
@@ -79,6 +78,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 	public DOLDAPointClassifier(DOLDAConfiguration config, DOLDADataSet dataset) {
 		this.config = config;
 		this.fullDataset = dataset;
+		fakeTextData = dataset.hasFakeTextData();
 		if(dataset.textData!=null) {
 			instancePipe = dataset.textData.getPipe();
 		}
@@ -132,11 +132,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 
 	@Override
 	public LabelAlphabet getLabelAlphabet() {
-		if(fakeTextData) {
-			return fakeTargetAlphabet;
-		} else { 			
-			return super.getLabelAlphabet();
-		}
+		return super.getLabelAlphabet();
 	}
 
 	protected int findXrow(String instanceId, String [] rowIds) {
@@ -255,31 +251,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 	@Override
 	public Trial [] crossValidate(InstanceList instances, int folds) throws Exception {
 		Trial [] trials = new Trial[folds];
-		InstanceList xvalInstances;
-
-		// We have no text data, so we create a fake dataset so we can use 
-		// MALLET's functionality for cross validation which is based on
-		// functionality in InstanceList
-		if(instances == null) {
-			Alphabet alphabet = new Alphabet(0);
-
-			String [] labels = fullDataset.getLabels();
-			String [] ids = fullDataset.getRowIds();
-
-			for (String label : labels) {
-				fakeTargetAlphabet.lookupIndex(label, true);
-			}
-
-			InstanceList fakeinstances = new InstanceList(alphabet, fakeTargetAlphabet);
-			fakeinstances.addThruPipe(new EmptyInstanceIterator(labels, ids, fakeTargetAlphabet, alphabet));
-
-			fakeTextData = true;
-			xvalInstances = fakeinstances; 
-		} else {
-			xvalInstances = instances;
-		}
-
-		cvIncText(xvalInstances, folds, trials);
+		cvIncText(instances, folds, trials);
 
 		return trials; 
 	}
@@ -414,7 +386,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		pw.close();
 		
 		int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
-		if(requestedWords>dolda.getAlphabet().size()) {
+		if(!fakeTextData && requestedWords>dolda.getAlphabet().size()) {
 			requestedWords = dolda.getAlphabet().size();
 		}
 

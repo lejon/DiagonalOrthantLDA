@@ -104,9 +104,7 @@ public class DOLDASamplingClassifier extends DOLDAPointClassifier implements DOL
 				try {
 					dolda = initiateSampler( cvSplit[TRAINING] );
 					lastDolda = dolda;
-					if(!fakeTextData) {
-						currentTestset = cvSplit[TESTING];
-					}
+					currentTestset = cvSplit[TESTING];
 					
 					System.out.println("Starting iterations (" + config.getNoIterations(DOLDAConfiguration.NO_ITER_DEFAULT) + " total).");
 					System.out.println("_____________________________\n");

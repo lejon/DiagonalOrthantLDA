@@ -8,13 +8,15 @@ import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
 
-import xyz.lejon.bayes.models.dolda.DOLDADataSet;
-import xyz.lejon.utils.DataSet;
-import xyz.lejon.utils.LoggingUtils;
-import xyz.lejon.utils.MatrixOps;
-import cc.mallet.util.LDAUtils;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
+import cc.mallet.util.LDAUtils;
+import xyz.lejon.bayes.models.dolda.DOLDADataSet;
+import xyz.lejon.utils.DataSet;
+import xyz.lejon.utils.EmptyInstanceIterator;
+import xyz.lejon.utils.LoggingUtils;
+import xyz.lejon.utils.MatrixOps;
 
 
 public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements DOLDAConfiguration, Configuration {
@@ -419,10 +421,14 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 		}
 		
 		String stoplistFn = getStoplistFilename("stoplist.txt");
-		
+		boolean fakeTextData = false;
 		if(haveFilename(textdataset_fn)) {
 			trainingInstances = LDAUtils.loadInstancesPrune(textdataset_fn, 
 					stoplistFn, getRareThreshold(DOLDAConfiguration.RARE_WORD_THRESHOLD),keepNumbers());
+		} else {
+			// Create an empty text dataset 
+			trainingInstances = createEmptyTrainingset(trainingDataSet.getLabels(),trainingDataSet.getIds());
+			fakeTextData = true;
 		}
 		
 		if(trainingDataSet!=null && trainingInstances!=null && trainingInstances.size()!=trainingDataSet.getY().length) {
@@ -464,7 +470,28 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			ensureMatchingClasslabels(trainingSet, trainingInstances);
 		}
 		
-		return new DOLDADataSet(trainingSet, trainingInstances);
+		return new DOLDADataSet(trainingSet, trainingInstances, fakeTextData);
+	}
+
+	private InstanceList createEmptyTrainingset(String [] labels, String [] ids) {
+		Alphabet alphabet = new Alphabet(0);
+		LabelAlphabet fakeTargetAlphabet = new LabelAlphabet();
+
+		if(ids==null) {
+			ids = new String[labels.length];
+			for (int i = 0; i < ids.length; i++) {
+				ids[i] = "id_" + 0;
+			}
+		}
+
+		for (String label : labels) {
+			fakeTargetAlphabet.lookupIndex(label, true);
+		}
+
+		InstanceList fakeinstances = new InstanceList(alphabet, fakeTargetAlphabet);
+		fakeinstances.addThruPipe(new EmptyInstanceIterator(labels, ids, fakeTargetAlphabet, alphabet));
+
+		return fakeinstances;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ public class DataSet {
 	public int [] Y;
 	public String [] labels;
 	public String [] ids;
+
 	public Map<String,Integer> labelToId = new HashMap<>();
 	public Map<Integer, String> idToLabels = new HashMap<>();
 	DataFrame<Object> origData;
@@ -43,6 +44,10 @@ public class DataSet {
 
 	public String [] getIds() {
 		return ids;
+	}
+	
+	public void setIds(String[] ids) {
+		this.ids = ids;
 	}
 
 	public void setX(double[][] x) {

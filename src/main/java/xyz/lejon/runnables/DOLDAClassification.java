@@ -241,7 +241,7 @@ public class DOLDAClassification {
 				
 				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
 				PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.txt");
-				if(textData!=null) {
+				if(textData!=null && !trainingSetData.hasFakeTextData()) {
 					String topWords = LDAUtils.formatTopWords(LDAUtils.getTopWords(requestedWords, 
 							dolda.getAlphabet().size(), 
 							dolda.getNoTopics(), 

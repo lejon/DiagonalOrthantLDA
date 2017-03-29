@@ -118,7 +118,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 	}
 
 	public String getDatasetFilename() {
-		 return getStringProperty("testset");
+		return getStringProperty("testset");
 	}
 
 	public String getTrainingsetFilename() {
@@ -284,10 +284,10 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 
 			DataFrame<Object> df = null;
 			if(parsedCommandLine.hasOption( "double_default" ) ) {
-				df = DataFrame.readCsv(csvFilename,sep,NumberDefault.DOUBLE_DEFAULT, naString, hasHeader);
+				df = DataFrame.readCsv(csvFilename,getSeparator(),NumberDefault.DOUBLE_DEFAULT, naString, hasHeader);
 				frames.add(df);
 			} else {
-				df = DataFrame.readCsv(csvFilename,sep,NumberDefault.LONG_DEFAULT, naString, hasHeader);
+				df = DataFrame.readCsv(csvFilename,getSeparator(),NumberDefault.LONG_DEFAULT, naString, hasHeader);
 				frames.add(df);
 			}
 
@@ -386,6 +386,11 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 				df = df.drop(id_col_no);
 				System.out.println("Dropping col: " + id_col_no);
 			}
+		} else {
+			ids = new String[df.length()];
+			for (int i = 0; i < df.length(); i++) {
+				ids[i] = "id_" + i;
+			}
 		}
 		return new ExtractDropResult(ids, df);
 	}
@@ -450,11 +455,11 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		System.out.println("Test set has " + testSet.getOrigData().length() + " rows");
 		System.out.println("Test set has " + noCovariates + " covariates");
 		System.out.print("Test set has " + noClasses + " classes:");
-		
-        HashValueComparator bvc =  new HashValueComparator(testSet.labelToId);
-        TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
-        sorted_map.putAll(testSet.labelToId);
-		
+
+		HashValueComparator bvc =  new HashValueComparator(testSet.labelToId);
+		TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
+		sorted_map.putAll(testSet.labelToId);
+
 		for(String k : sorted_map.keySet()) {
 			System.out.print(k + " => " + testSet.labelToId.get(k) + ", ");
 		}
@@ -510,7 +515,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			System.out.println("Log transforming dataset...");
 			scale_log = true;
 		}
-				
+
 		if(configHasProperty("normalize")) {			
 			normalize = getBooleanProperty("normalize");			
 		}
@@ -519,17 +524,17 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			System.out.println("Normalizing dataset...");
 			normalize = true;
 		}
-		
+
 		if(normalize) System.out.println("Normalizing dataset...");
 		else System.out.println("NOT Normalizing dataset...");
-		
+
 		if (getBoolean("no_headers", true)) {
 			hasHeader = false;
 		}
 		if (getStringProperty("betas_output_file")!=null) {
 			doSave = true;
 		}
-		
+
 		if(configHasProperty("intercept")) {
 			addIntercept = getBooleanProperty("intercept");	
 			if(addIntercept) System.out.println("Using intercept...");
@@ -542,7 +547,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			addIntercept = icept == 1;
 			if(addIntercept) System.out.println("Using intercept...");
 		}
-		
+
 		String csvFilename = null;
 		if(parsedCommandLine.getArgs().length>0) {
 			csvFilename = parsedCommandLine.getArgs()[0];
@@ -561,7 +566,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		String [] plotLabels = null;
 		Map<String,Integer> labelToId = new HashMap<>();
 		Map<Integer, String> idToLabels = new HashMap<>();
-		
+
 		// Don't load dataset if we have no valid filename, just load the labels
 		if(csvFilename==null) {
 			if(!haveFilename(trainingset_label_fn)) {
@@ -574,11 +579,11 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			loadTestDataFrame();
 		} else {
 			if(parsedCommandLine.hasOption( "double_default" ) ) {
-				df = DataFrame.readCsv(csvFilename,sep,NumberDefault.DOUBLE_DEFAULT, naString, hasHeader);
+				df = DataFrame.readCsv(csvFilename,getSeparator(),NumberDefault.DOUBLE_DEFAULT, naString, hasHeader);
 				frames.add(df);
 			} else {
 				System.out.println("Loading from: " + csvFilename);
-				df = DataFrame.readCsv(csvFilename,sep,NumberDefault.LONG_DEFAULT, naString, hasHeader);
+				df = DataFrame.readCsv(csvFilename,getSeparator(),NumberDefault.LONG_DEFAULT, naString, hasHeader);
 				frames.add(df);
 			}
 
@@ -602,11 +607,11 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			LabelRes extracted = extractLabels(df, plotLabels, ys, labelToId, idToLabels);
 			plotLabels = extracted.plotLables;
 			df = extracted.df;
-			
+
 			ExtractDropResult res = extractAndDropIds(df, id_col_no, id_col_name);
 			String [] ids = res.ids;
 			df = res.df;
-			
+
 			df = dropColumns(df);
 
 			System.out.println("Dataset types:" + df.types());
@@ -637,7 +642,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 
 			System.out.println(mmdf.columns());
 			xs = mmdf.fillna(0.0).toArray(double[][].class);
-			
+
 			if(scale_log) xs = MatrixOps.log(xs, true);
 			if(normalize) xs = MatrixOps.centerAndScale(xs);
 			if(addIntercept) xs = MatrixOps.addIntercept(xs);
@@ -690,28 +695,28 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 					names[cIdx++] = cNamesIterator.next().toString();
 				}
 			}
-			
+
 			trainingSet.setColnamesX(names);
 			trainingSet.setX(xs);
 			trainingSet.setPca(pca);
 		}
 		return trainingSet;
 	}
-	
+
 	class HashValueComparator implements Comparator<String> {
 
-	    Map<String, Integer> base;
-	    public HashValueComparator(Map<String, Integer> base) {
-	        this.base = base;
-	    }
- 
-	    public int compare(String a, String b) {
-	        if (base.get(a) >= base.get(b)) {
-	            return 1;
-	        } else {
-	            return -1;
-	        }
-	    }
+		Map<String, Integer> base;
+		public HashValueComparator(Map<String, Integer> base) {
+			this.base = base;
+		}
+
+		public int compare(String a, String b) {
+			if (base.get(a) >= base.get(b)) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
 	}
 
 	DataFrame<Object> dropColumns(DataFrame<Object> df) {

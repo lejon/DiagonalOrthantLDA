@@ -12,10 +12,17 @@ public class DOLDADataSet {
 	
 	DataSet additionalCovariates;
 	InstanceList textData;
+	boolean fakeTextData = false;
 	
 	public DOLDADataSet(DataSet additionalCovariates, InstanceList textData) {
 		this.additionalCovariates = additionalCovariates;
 		this.textData = textData;
+	}
+	
+	public DOLDADataSet(DataSet additionalCovariates, InstanceList textData, boolean fakeTextData) {
+		this.additionalCovariates = additionalCovariates;
+		this.textData = textData;
+		this.fakeTextData = fakeTextData;
 	}
 
 	public String [] getColnamesX() {
@@ -120,5 +127,13 @@ public class DOLDADataSet {
 	
 	public boolean isEmpty() {
 		return additionalCovariates == null && textData == null;
+	}
+
+	public void setIds(String[] ids) {
+		additionalCovariates.setIds(ids);
+	}
+
+	public boolean hasFakeTextData() {
+		return fakeTextData;
 	}
 }
