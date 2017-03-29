@@ -51,7 +51,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 	DataSet trainingSet;
 	DataSet testSet; 
 
-	String sep = ",";
+	String sep = null;
 
 	public ParsedDOConfiguration(DOCommandLineParser cp) throws ConfigurationException {
 		super(cp.getConfigFn());
@@ -86,10 +86,10 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		if (parsedCommandLine.hasOption( "betas_output_file" )) {
 			doSave = true;
 		}
-		
-		sep = parsedCommandLine.hasOption( "separator" ) ? (String) parsedCommandLine.getOptionValue("separator").trim() : ",";
 
-		if(!(sep.equals(",") || sep.equals(";") || sep.equals("\\t"))) {
+		sep = parsedCommandLine.hasOption( "separator" ) ? (String) parsedCommandLine.getOptionValue("separator").trim() : null;
+
+		if(sep != null && (!(sep.equals(",") || sep.equals(";") || sep.equals("\\t")))) {
 			System.out.println("Only the separators ',' , ';' or '\\t' is currently supported...");
 			System.exit(255);
 		}
@@ -862,5 +862,15 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			return getBooleanProperty("normalize");
 		}
 		return normalize;
+	}
+
+	@Override
+	public String getSeparator() {
+		if(sep==null) {
+			String configProperty = getStringProperty("separator");
+			return (configProperty == null) ? "," : configProperty;
+		} else {
+			return sep;
+		}
 	}
 }

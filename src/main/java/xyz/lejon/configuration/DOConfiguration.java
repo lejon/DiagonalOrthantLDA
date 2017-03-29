@@ -47,4 +47,6 @@ public interface DOConfiguration {
 	public String betaSamplesOutputFn();
 	
 	boolean getUseIntercept();
+	
+	public String getSeparator();
 }

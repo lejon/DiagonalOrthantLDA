@@ -70,9 +70,9 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			if(addIntercept) System.out.println("Using intercept...");
 		}
 
-		sep = parsedCommandLine.hasOption( "separator" ) ? (String) parsedCommandLine.getOptionValue("separator").trim() : ",";
+		sep = parsedCommandLine.hasOption( "separator" ) ? (String) parsedCommandLine.getOptionValue("separator").trim() : null;
 
-		if(!(sep.equals(",") || sep.equals(";") || sep.equals("\\t"))) {
+		if(sep != null && (!(sep.equals(",") || sep.equals(";") || sep.equals("\\t")))) {
 			System.out.println("Only the separators ',' , ';' or '\\t' is currently supported...");
 			System.exit(255);
 		}
