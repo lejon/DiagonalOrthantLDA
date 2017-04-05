@@ -166,7 +166,7 @@ public class DOLDAClassification {
 				System.out.println("Using Config: " + config.whereAmI());
 				System.out.println("Runnin subconfig: " + conf);
 				String dataset_fn = config.getTextDatasetTrainFilename();
-				System.out.println("Using dataset: " + dataset_fn);
+				System.out.println("Using training text dataset: " + dataset_fn);
 
 				DOLDADataSet trainingSetData = config.loadCombinedTrainingSet();
 

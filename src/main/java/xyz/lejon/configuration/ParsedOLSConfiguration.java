@@ -731,10 +731,9 @@ public class ParsedOLSConfiguration extends HierarchicalINIConfiguration impleme
 		if(normalize) xs = MatrixOps.centerAndScale(xs);
 		if(addIntercept) xs = MatrixOps.addIntercept(xs);
 		
-		System.out.println("Trainingset width before PCA: " + xs[0].length);
-		
 		PrincipalComponentAnalysis pca = null;
 		if(initial_dims >0 && xs[0].length>initial_dims) {
+			System.out.println("Trainingset width before PCA: " + xs[0].length);
 			pca = new PrincipalComponentAnalysis();
 			xs = pca.pca(xs, initial_dims);
 		}

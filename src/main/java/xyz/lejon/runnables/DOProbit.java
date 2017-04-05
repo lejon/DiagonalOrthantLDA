@@ -77,7 +77,7 @@ public class DOProbit {
 				
 				System.out.println("Running SunConf: " + conf);
 				System.out.println("Using Config: " + config.whereAmI());
-				String dataset_fn = config.getDatasetFilename();
+				String dataset_fn = config.getTrainingsetFilename();
 				System.out.println("Using dataset: " + dataset_fn);
 				DataSet trainingSetData = config.loadTrainingSet();
 				DataSet testSetData = config.loadTestSet();

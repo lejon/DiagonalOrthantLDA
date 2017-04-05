@@ -24,8 +24,6 @@ public interface DOConfiguration {
 
 	public String whereAmI();
 
-	public String getDatasetFilename();
-
 	public int getLag();
 
 	public int getBurnIn();
@@ -49,4 +47,8 @@ public interface DOConfiguration {
 	boolean getUseIntercept();
 	
 	public String getSeparator();
+
+	public String getTrainingsetFilename();
+	
+	public String getTestsetFilename();
 }

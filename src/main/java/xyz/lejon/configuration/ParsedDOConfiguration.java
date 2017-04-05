@@ -117,11 +117,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		return (dir == null) ? defaultDir : dir;
 	}
 
-	public String getDatasetFilename() {
-		return getStringProperty("testset");
-	}
-
-	public String getTrainingsetFilename() {
+	public String getTestsetFilename() {
 		return getStringProperty("testset");
 	}
 
@@ -255,7 +251,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 	}
 	
 	boolean haveTestSet() {
-		return parsedCommandLine.getArgs().length>1 || getTrainingsetFilename()!=null;
+		return parsedCommandLine.getArgs().length>1 || getTestsetFilename()!=null;
 	}
 	
 	protected DataFrame<Object> loadTestDataFrame() throws IOException {
@@ -640,18 +636,17 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			else 
 				mmdf = Conversion.toModelMatrixDataFrame(df,null,false, refCats, null);
 
-			System.out.println(mmdf.columns());
+			//System.out.println(mmdf.columns());
 			xs = mmdf.fillna(0.0).toArray(double[][].class);
 
 			if(scale_log) xs = MatrixOps.log(xs, true);
 			if(normalize) xs = MatrixOps.centerAndScale(xs);
 			if(addIntercept) xs = MatrixOps.addIntercept(xs);
 
-			System.out.println("Trainingset width before PCA: " + xs[0].length);
-
 			boolean didPca = false;
 			PrincipalComponentAnalysis pca = null;
 			if(initial_dims >0 && xs[0].length>initial_dims) {
+				System.out.println("Trainingset width before PCA: " + xs[0].length);
 				pca = new PrincipalComponentAnalysis();
 				xs = pca.pca(xs, initial_dims);
 				didPca = true;
@@ -877,5 +872,10 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		} else {
 			return sep;
 		}
+	}
+
+	@Override
+	public String getTrainingsetFilename() {
+		return getStringProperty("trainingset");
 	}
 }

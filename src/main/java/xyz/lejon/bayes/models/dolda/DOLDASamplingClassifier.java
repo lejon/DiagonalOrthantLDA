@@ -211,7 +211,7 @@ public class DOLDASamplingClassifier extends DOLDAPointClassifier implements DOL
 		for(Instance instance : currentTestset) {
 			classifyInstance(instance, betas);
 		}
-		System.out.println("No correct: " + noCorrect);
+		//System.out.println("No correct: " + noCorrect);
 	}
 
 	/**
