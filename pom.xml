@@ -7,7 +7,8 @@
 	<!-- v1.6.1: Use and adapt to latest PCLDA API -->
 	<!-- v1.7.0: Cleanup and addition of Linear Regression cross validation runnable -->
 	<!-- v1.7.1: More Cleanup -->
-	<version>1.7.1</version>
+	<!-- v1.7.2: Speed increase per iteration by avoiding unnecessary matrix concat -->
+	<version>1.7.2</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
