@@ -263,6 +263,16 @@ public class MatrixOpTest {
 		double [][] conct = MatrixOps.concatenate(m1, v2);
 		Assert.assertArrayEquals( expected, conct );
 	}
+	
+	@Test
+	public void testConcatVectorVector() {
+		double [] v1  = {1.0,0.0,0.0,0.0,1.0};
+		double [] v2  = {2.0,0.0,0.0,0.0,2.0};
+		double [] expected  = {1.0,0.0,0.0,0.0,1.0,2.0,0.0,0.0,0.0,2.0};
+		
+		double [] conct = MatrixOps.concatenate(v1, v2);
+		Assert.assertArrayEquals( expected, conct, 0.00000001 );
+	}
 
 	@Test
 	public void testExtractSubMatrix() {

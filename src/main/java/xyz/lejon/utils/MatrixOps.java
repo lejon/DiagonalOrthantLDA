@@ -1152,7 +1152,7 @@ public class MatrixOps {
 	}
 	
 	// Unit Tested
-		public static double [] concatenate(double [] v1,double [] v2) {
+		public static double [] concatenateOLD(double [] v1,double [] v2) {
 			double [] result = new double[v1.length+v2.length];
 			int index = 0;
 			for (int i = 0; i < v1.length; i++, index++) {
@@ -1163,9 +1163,17 @@ public class MatrixOps {
 			}
 			return result;
 		}
+		
+		public static double [] concatenate(double [] v1,double [] v2) {
+			double [] result = new double[v1.length+v2.length];
+			System.arraycopy( v1, 0, result, 0,  v1.length);
+			System.arraycopy( v2, 0, result, v1.length, v2.length);			
+			return result;
+		}
+		
 
 	// Unit Tested
-	public static double [][] concatenate(double [][] m1,double[][] m2) {
+	public static double [][] concatenateOLD(double [][] m1,double[][] m2) {
 		if(m1.length!=m2.length) throw new IllegalArgumentException("m1 and m2 must have the same number of rows:" + m1.length + " != " + m2.length);
 		double [][] result = new double[m1.length][m1[0].length+m2[0].length];
 		int resCol = 0;
@@ -1177,6 +1185,18 @@ public class MatrixOps {
 			for (int j = 0; j < m2[i].length; j++) {
 				result[i][resCol++] = m2[i][j];
 			}
+		}	
+		return result;
+	}
+	
+	// Unit Tested
+	// New version, hopefully faster than above
+	public static double [][] concatenate(double [][] m1,double[][] m2) {
+		if(m1.length!=m2.length) throw new IllegalArgumentException("m1 and m2 must have the same number of rows:" + m1.length + " != " + m2.length);
+		double [][] result = new double[m1.length][m1[0].length+m2[0].length];
+		for (int i = 0; i < m1.length; i++) {
+			System.arraycopy( m1[i], 0, result[i], 0,  m1[i].length);
+			System.arraycopy( m2[i], 0, result[i], m1[i].length,  m2[i].length);
 		}	
 		return result;
 	}

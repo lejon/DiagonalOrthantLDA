@@ -230,14 +230,13 @@ public class DOLDASamplingClassifier extends DOLDAPointClassifier implements DOL
 
 		int row = findXrow(instanceId, testRowIds);
 
-		double [][] xs = MatrixOps.concatenate(testXs,sampledSupervisedTestTopics);
 		int [] ys = testYs;
 
 		int predClass;
 		int realClass;
 
-		double [][] xrow = new double[1][xs[row].length];
-		xrow[0] = xs[row];
+		double [][] xrow = new double[1][testXs[row].length+sampledSupervisedTestTopics[row].length];
+		xrow[0] = MatrixOps.concatenate(testXs[row],sampledSupervisedTestTopics[row]);
 
 		double[] scores = calcClassScores(xrow, betas);
 		int categoryIdx = MatrixOps.maxIdx(scores);
