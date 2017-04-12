@@ -21,11 +21,14 @@ import xyz.lejon.sampling.NegativeTruncatedNormal;
 import xyz.lejon.sampling.PositiveTruncatedNormal;
 import xyz.lejon.utils.MatrixOps;
 import cc.mallet.topics.LDADocSamplingContext;
+import cc.mallet.topics.LogState;
 import cc.mallet.topics.UncollapsedParallelLDA;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
+import cc.mallet.util.LDAUtils;
+import cc.mallet.util.Stats;
 
 /**
  * This is a Supervised LDA version with optional extra covariates. The sampler learns
@@ -162,7 +165,12 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 			for (int iteration = 1; iteration <= iterations && !abort; iteration++) {
 				probitSampling();
 				if (showTopicsInterval > 0 && iteration % showTopicsInterval == 0) {
-					System.out.println("Iteration " + iteration );					
+					System.out.println("Iteration " + iteration );		
+					double logLik = doProbitLikelihood();	
+					String loggingPath = config.getLoggingUtil().getLogDir().getAbsolutePath();
+					LogState logState = new LogState(logLik, iteration, null, loggingPath, logger);
+					LDAUtils.logLikelihoodToFile(logState);
+					logger.info("<" + iteration + "> Log Likelihood: " + logLik);					
 				}
 				if(iterationCallback!=null) {
 					iterationCallback.iterationState(new SimpleDOLDAIterationState(null, betas));
@@ -494,6 +502,14 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 		// Calculating the true supervised Log Likelihood is VERY time consuming
 		// if we can settle with the unsupervised LL it is MUCH faster
 		if(useUnsupervisedLL) return loglik;
+
+		double DOpart_loglik = doProbitLikelihood();	
+		
+		loglik = loglik + DOpart_loglik;
+		return loglik;
+	}
+
+	protected double doProbitLikelihood() {
 		jdistlib.Normal nd = new jdistlib.Normal(0,1.0);
 		double DOpart_loglik = 0;
 
@@ -577,9 +593,7 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 
 			// Sum everything together
 			DOpart_loglik =+ DOloglik1 - DOloglik2;
-		}	
-		
-		loglik = loglik + DOpart_loglik;
-		return loglik;
+		}
+		return DOpart_loglik;
 	}
 }
