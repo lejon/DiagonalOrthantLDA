@@ -195,6 +195,12 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 	
 		//long beforeBetaSampling = System.currentTimeMillis();
 		sampleBetas(Xs, XtX.toArray2(), Xts, XtX.toArray2());
+		if(saveBetaSamples) {
+			for (int k = 0; k < noClasses; k++) {
+				saveBetaSample(k);
+			}
+		}
+		
 		//long elapsedMillis = System.currentTimeMillis() - beforeBetaSampling;
 		//System.out.println("Sample Betas took: " + elapsedMillis + " ms");
 		//System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas, 5, 5, 20));
