@@ -15,11 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.configuration.ConfigurationException;
 import org.jblas.DoubleMatrix;
 
-import xyz.lejon.configuration.DOLDAConfiguration;
-import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
-import xyz.lejon.sampling.NegativeTruncatedNormal;
-import xyz.lejon.sampling.PositiveTruncatedNormal;
-import xyz.lejon.utils.MatrixOps;
 import cc.mallet.topics.LDADocSamplingContext;
 import cc.mallet.topics.LogState;
 import cc.mallet.topics.UncollapsedParallelLDA;
@@ -28,7 +23,11 @@ import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.util.LDAUtils;
-import cc.mallet.util.Stats;
+import xyz.lejon.configuration.DOLDAConfiguration;
+import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
+import xyz.lejon.sampling.NegativeTruncatedNormal;
+import xyz.lejon.sampling.PositiveTruncatedNormal;
+import xyz.lejon.utils.MatrixOps;
 
 /**
  * This is a Supervised LDA version with optional extra covariates. The sampler learns
