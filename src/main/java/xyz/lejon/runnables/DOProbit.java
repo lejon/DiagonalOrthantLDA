@@ -121,12 +121,7 @@ public class DOProbit {
 				System.out.println("Total correct: " + result.noCorrect + " / " + ((double)testset.length) +  " => " + String.format("%.0f",pCorrect) + "% correct");
 				System.out.println(PROGRAM_NAME + " took: " + ((double) (t2-t1) / 1000.0) + " seconds");
 				
-				String [] columnLabels = new String[betas[0].length+1];
-				columnLabels[0] = "Class";
-				for (int lblIdx = 1; lblIdx < columnLabels.length; lblIdx++) {
-					// In the output name colums Xn for X covariates and Zn for supervised topics
-					columnLabels[lblIdx] = "X" + lblIdx;
-				}
+				String [] columnLabels = ExperimentUtils.createColumnLabels(xs[0].length, betas[0].length-xs[0].length);
 				
 				File lgDir = lu.getLogDir();
 				if(saveConfusionMatrixAsCsv) {

@@ -21,11 +21,10 @@ public class ExperimentUtils {
 			System.err.println("WARNING: DOLDAClassification: asked to write doc topic means but it is empty");
 	}
 
-	public static void saveBetaSamples(File lgDir, String [] xColnames, int noColumns,
+	public static void saveBetaSamples(File lgDir, String [] colnames, int noColumns,
 			List<double []> [] sampledBetas, Map<Integer, String> idMap, 
 			String betaSamplesOutputFn) throws IOException {
-		String[] columnLabels = extractColumnLabels(xColnames, noColumns);
-		DataFrame<Object> out = new DataFrame<>(columnLabels);
+		DataFrame<Object> out = new DataFrame<>(colnames);
 		for (int k = 0; k < sampledBetas.length; k++) {
 			List<double []> betasClassK = sampledBetas[k];
 			for (int j = 0; j < betasClassK.size(); j++) {
@@ -42,10 +41,9 @@ public class ExperimentUtils {
 		if(out.length()>0) out.writeCsv(lgDir.getAbsolutePath() + "/" + betaSamplesOutputFn);
 	}
 
-	public static void saveBetas(File lgDir, String [] xColnames, int noColumns, 
+	public static void saveBetas(File lgDir, String [] colnames, int noColumns, 
 			double[][] betas, Map<Integer, String> idMap, String betasOutputFn) throws IOException {
-		String[] columnLabels = extractColumnLabels(xColnames, noColumns);
-		DataFrame<Object> out = new DataFrame<>(columnLabels);
+		DataFrame<Object> out = new DataFrame<>(colnames);
 		for (int j = 0; j < betas.length; j++) {
 			List<Object> row = new ArrayList<>();
 			//Add the class id to the first column
@@ -58,20 +56,34 @@ public class ExperimentUtils {
 		out.writeCsv(lgDir.getAbsolutePath() + "/" + betasOutputFn);
 	}
 	
-	public static String[] extractColumnLabels(String [] xColnames, int noColumns) {
-		String [] columnLabels = new String[xColnames.length+1];
+	public static String[] createColumnLabels(int noXColumns, int noZColumns) {
+		String [] columnLabels = new String[noXColumns+noZColumns+1];
 		columnLabels[0] = "Class";
 		for (int lblIdx = 1; lblIdx < columnLabels.length; lblIdx++) {
 			// In the output name colums Xn for X covariates and Zn for supervised topics
 			// We have <= since we have added the "Class" column
-			if(lblIdx <= noColumns) {
-				columnLabels[lblIdx] = xColnames[lblIdx-1];
+			if(lblIdx <= noXColumns) {
+				columnLabels[lblIdx] = "X" + lblIdx;
 			} else {
-				columnLabels[lblIdx] = "Z" + (lblIdx-noColumns);
+				columnLabels[lblIdx] = "Z" + (lblIdx-noXColumns);
 			}
 		}
 		return columnLabels;
 	}
-
+	
+	public static String[] createColumnLabelsFromXColumns(String [] xColumns, int noZColumns) {
+		String [] columnLabels = new String[xColumns.length+noZColumns+1];
+		columnLabels[0] = "Class";
+		for (int lblIdx = 1; lblIdx < columnLabels.length; lblIdx++) {
+			// In the output name colums Xn for X covariates and Zn for supervised topics
+			// We have <= since we have added the "Class" column
+			if(lblIdx <= xColumns.length) {
+				columnLabels[lblIdx] = xColumns[lblIdx-1];
+			} else {
+				columnLabels[lblIdx] = "Z" + (lblIdx-xColumns.length);
+			}
+		}
+		return columnLabels;
+	}
 
 }
