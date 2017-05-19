@@ -9,7 +9,9 @@
 	<!-- v1.7.1: More Cleanup -->
 	<!-- v1.7.2: Speed increase per iteration by avoiding unnecessary matrix concat -->
 	<!-- v1.7.3: Print loglikelihood when we have only X covariates -->
-	<version>1.7.3</version>
+	<!-- v1.7.4: Bugfix -->
+	<!-- v1.7.5: Bugfix -->
+	<version>1.7.5</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
