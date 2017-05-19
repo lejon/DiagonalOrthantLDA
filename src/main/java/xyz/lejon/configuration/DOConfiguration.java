@@ -17,7 +17,9 @@ public interface DOConfiguration {
 	public DataSet loadTestSet() throws IOException;
 
 	public void setLoggingUtil(LoggingUtils lu);
-
+	
+	public LoggingUtils  getLoggingUtil();
+	
 	public String[] getSubConfigs();
 
 	public void activateSubconfig(String conf);

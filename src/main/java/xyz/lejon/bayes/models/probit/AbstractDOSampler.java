@@ -10,7 +10,10 @@ import java.util.Random;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.ejml.data.DenseMatrix64F;
+import org.jblas.DoubleMatrix;
 
+import cc.mallet.topics.LogState;
+import cc.mallet.util.LDAUtils;
 import xyz.lejon.configuration.DOConfiguration;
 import xyz.lejon.sampling.NegativeTruncatedNormal;
 import xyz.lejon.sampling.PositiveTruncatedNormal;
@@ -43,6 +46,8 @@ public abstract class AbstractDOSampler {
 	protected int iterinter = 10;
 	private int noSampledBeta;
 	boolean useIntecept = false;
+	boolean logLoglikelihood = false;
+	protected String loggingPath;
 	
 	List<double []> [] sampledBetas;
 
@@ -58,6 +63,11 @@ public abstract class AbstractDOSampler {
 		
 		noCovariates = xs[0].length;
 		noRows = xs.length;
+		
+		loggingPath = config.getLoggingUtil().getLogDir().getAbsolutePath();
+		if(loggingPath!=null && loggingPath.length()>0) {
+			logLoglikelihood = true;
+		}
 
 		// Working copy
 		betas = new double[noClasses][noCovariates];
@@ -119,6 +129,11 @@ public abstract class AbstractDOSampler {
 					logBetas();
 				}
 				postIteration(iter);
+				if (logLoglikelihood && currentIteration % iterinter == 0) {
+					double logLik = doProbitLikelihood();	
+					LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
+					LDAUtils.logLikelihoodToFile(logState);					
+				}
 			}
 		} catch (Exception e) {
 			postSample();
@@ -223,6 +238,53 @@ public abstract class AbstractDOSampler {
 				throw new IllegalStateException(e);
 			}
 		}
+	}
+	
+	public double doProbitLikelihood() {
+		jdistlib.Normal nd = new jdistlib.Normal(0,1.0);
+		double loglik = 0;
+
+		DoubleMatrix X = new DoubleMatrix(xs);
+		DoubleMatrix dBetas = new DoubleMatrix(betas);
+
+		DoubleMatrix dBetasT = dBetas.transpose();
+		DoubleMatrix dXBetas = X.mmul(dBetasT);
+
+		double [][] XBeta  =  dXBetas.toArray2();
+		
+		// Iterate over all observations 
+		for (int d = 0; d < XBeta.length; d++){
+			double DOloglik1;
+			double DOloglik2;
+
+			DOloglik1 = 0;
+			for (int l = 0; l < XBeta[d].length; l++){
+				// For ALL documents with class 'l'
+				if(l == ys[d]) {
+					DOloglik1 =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
+				// For documents with class != 'l'
+				} else {
+					DOloglik1 =+ Math.log(nd.cumulative(-XBeta[d][l]));
+				}
+			}
+			
+			double DOlik2 = 0;
+			for (int j = 0; j < XBeta[d].length; j++){
+				double toExp = 0;
+				for (int l = 0; l < XBeta[d].length; l++){
+					if(j == l) {
+						toExp =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
+					} else {
+						toExp =+ Math.log(nd.cumulative(-XBeta[d][l]));
+					}						
+				}
+				DOlik2 =+ Math.exp(toExp);
+			}
+			DOloglik2 = Math.log(DOlik2);
+			
+			loglik =+ DOloglik1 - DOloglik2;
+		}
+		return loglik;
 	}
 
 }
