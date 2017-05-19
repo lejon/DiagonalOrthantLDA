@@ -15,6 +15,7 @@ import xyz.lejon.configuration.DOCommandLineParser;
 import xyz.lejon.configuration.DOConfiguration;
 import xyz.lejon.eval.EvalResult;
 import xyz.lejon.utils.DataSet;
+import xyz.lejon.utils.LoggingUtils;
 
 public class BasicSamplerTest {
 
@@ -41,6 +42,10 @@ public class BasicSamplerTest {
 		String [] args = {"--run_cfg=src/main/resources/configuration/DOProbitBasicTest.cfg"};
 		DOCommandLineParser cp = new DOCommandLineParser(args);
 		DOConfiguration config = (DOConfiguration) ConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		String logSuitePath = "TestRuns/RunSuite" + LoggingUtils.getDateStamp();
+		lu.checkAndCreateCurrentLogDir(logSuitePath);
+		config.setLoggingUtil(lu);
 
 		String [] configs = config.getSubConfigs();
 		for(String conf : configs) {
