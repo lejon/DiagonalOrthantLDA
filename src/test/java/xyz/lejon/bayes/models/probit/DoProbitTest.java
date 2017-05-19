@@ -15,6 +15,7 @@ import xyz.lejon.configuration.DOCommandLineParser;
 import xyz.lejon.configuration.DOConfiguration;
 import xyz.lejon.eval.EvalResult;
 import xyz.lejon.utils.DataSet;
+import xyz.lejon.utils.LoggingUtils;
 import xyz.lejon.utils.MatrixOps;
 
 public class DoProbitTest {
@@ -25,6 +26,10 @@ public class DoProbitTest {
 		String [] args = {"--run_cfg=src/main/resources/configuration/DOProbitBasicTest.cfg"};
 		DOCommandLineParser cp = new DOCommandLineParser(args);
 		DOConfiguration config = (DOConfiguration) ConfigFactory.getMainConfiguration(cp);
+		LoggingUtils lu = new LoggingUtils();
+		String logSuitePath = "TestRuns/RunSuite" + LoggingUtils.getDateStamp();
+		lu.checkAndCreateCurrentLogDir(logSuitePath);
+		config.setLoggingUtil(lu);
 
 		config.forceActivateSubconfig("DO_glass_full");
 		DataSet trainingSetData = config.loadTrainingSet();
