@@ -211,12 +211,13 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 				col = df.col(label_col_no);
 			}
 			for (Object lbl : col) {
-				plotLabels[idx] = lbl.toString();
-				if(labelToId.get(lbl.toString())==null) {
-					labelToId.put(lbl.toString(),lblcnt);
-					idToLabels.put(lblcnt++,lbl.toString());
+				String labelName = lbl == null ? "<UNKNOWN>" : lbl.toString();
+				plotLabels[idx] = labelName;
+				if(labelToId.get(labelName)==null) {
+					labelToId.put(labelName,lblcnt);
+					idToLabels.put(lblcnt++,labelName);
 				}
-				ys[idx++] = labelToId.get(lbl.toString());
+				ys[idx++] = labelToId.get(labelName);
 			}
 
 			// Now drop the label column
@@ -584,6 +585,7 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			}
 
 			System.out.println("Loaded CSV with: " + df.length()+ " rows and " + df.size() +" columns.");
+			System.out.println("Columns are: " + df.columns());
 
 			if (parsedCommandLine.hasOption( "transpose" )) {
 				df = df.transpose();
