@@ -80,6 +80,7 @@ public class DOProbit {
 				String dataset_fn = config.getTrainingsetFilename();
 				System.out.println("Using dataset: " + dataset_fn);
 				DataSet trainingSetData = config.loadTrainingSet();
+				//System.out.println("Design matrix covariates: " + Arrays.asList(trainingSetData.getColnamesX()));
 				DataSet testSetData = config.loadTestSet();
 				System.out.println("Using lag: " + config.getLag());
 				System.out.println("Using burnIn: " + config.getBurnIn());
@@ -121,7 +122,12 @@ public class DOProbit {
 				System.out.println("Total correct: " + result.noCorrect + " / " + ((double)testset.length) +  " => " + String.format("%.0f",pCorrect) + "% correct");
 				System.out.println(PROGRAM_NAME + " took: " + ((double) (t2-t1) / 1000.0) + " seconds");
 				
-				String [] columnLabels = ExperimentUtils.createColumnLabels(xs[0].length, betas[0].length-xs[0].length);
+				String[] colnamesX = trainingSetData.getColnamesX();
+				String [] columnLabels = new String[colnamesX.length+1];
+				columnLabels[0] = "Class";
+				for (int j = 1; j < columnLabels.length; j++) {
+					columnLabels[j] = colnamesX[j-1];
+				}
 				
 				File lgDir = lu.getLogDir();
 				if(saveConfusionMatrixAsCsv) {
