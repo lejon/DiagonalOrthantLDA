@@ -10,7 +10,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import xyz.lejon.configuration.DOConfiguration;
-import xyz.lejon.sampling.FixedCovarianceMultivariateNormalDistribution;
+import xyz.lejon.sampling.FastMVNSamplerEJML;
 import xyz.lejon.utils.MatrixOps;
 
 
@@ -20,7 +20,7 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 	protected DenseMatrix64F muTilde;
 	protected DenseMatrix64F mumu;
 	protected double c = 10;
-	FixedCovarianceMultivariateNormalDistribution fcmvn;
+	FastMVNSamplerEJML mvns; 
 
 	public MultivariateParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys, int noClasses) throws IOException {
 		this.xs = xs;
@@ -28,7 +28,7 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 		this.noClasses = noClasses;
 		setupSampler(config, xs, noClasses);
 		double [] tmpMean = new double[noCovariates];
-		fcmvn = new FixedCovarianceMultivariateNormalDistribution(tmpMean,Stilde);
+		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
 	}
 	
 	protected void setupSampler(DOConfiguration config, double[][] xs, int noClasses) {
@@ -57,7 +57,7 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 		invert(priorMean);
 		Stilde = MatrixOps.extractDoubleArray(priorMean);
 		double [] tmpMean = new double[noCovariates];
-		fcmvn = new FixedCovarianceMultivariateNormalDistribution(tmpMean,Stilde);
+		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
 	}
 
 	public void sampleBeta(int k) {
@@ -71,9 +71,6 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 		CommonOps.mult(priorMean, localTilde, localMu);
 		double [] mu_tile = localMu.getData();
 
-		betas[k] = fcmvn.sample(mu_tile);
+		betas[k] = mvns.sample(mu_tile);
 	}
-
-	@Override
-	public void postSample() {}
 }

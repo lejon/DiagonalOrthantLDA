@@ -137,7 +137,19 @@ public class FastMVNSamplerEJML {
 	 * Generate sample using the given mean and covariance matrix set during construction
 	 * 
 	 * @param mean
-	 * @return
+	 * @return sample from a multivariate normal distribution
+	 */	
+	public synchronized double [] sample(double [] mean) {
+		final DenseMatrix64F dmean = new DenseMatrix64F(mean.length,1);
+		dmean.setData(mean);
+		return sample(dmean);
+	}
+
+	/**
+	 * Generate sample using the given mean and covariance matrix set during construction
+	 * 
+	 * @param mean
+	 * @return sample from a multivariate normal distribution
 	 */
 	public synchronized double [] sample(DenseMatrix64F mean) {
 		final int dim = mean.numRows;

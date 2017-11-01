@@ -10,7 +10,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import xyz.lejon.configuration.DOConfiguration;
-import xyz.lejon.sampling.FixedCovarianceMultivariateNormalDistribution;
+import xyz.lejon.sampling.FastMVNSamplerEJML;
 import xyz.lejon.utils.MatrixOps;
 
 
@@ -21,7 +21,7 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 	protected DenseMatrix64F muTilde;
 	protected DenseMatrix64F mumu;
 	protected double c = 0.1;
-	FixedCovarianceMultivariateNormalDistribution fcmvn;
+	FastMVNSamplerEJML mvns; 
 
 	public SerialDOSampler(DOConfiguration config, double [][] xs, int [] ys, int noClasses) throws IOException {
 		this.xs = xs;
@@ -55,7 +55,7 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 		invert(priorMean);
 		Stilde = MatrixOps.extractDoubleArray(priorMean);
 		double [] tmpMean = new double[noCovariates];
-		fcmvn = new FixedCovarianceMultivariateNormalDistribution(tmpMean,Stilde);
+		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
 	}
 
 	public void sampleBeta(int k) {
@@ -67,8 +67,7 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 		multTransA(Xd, zColKd, muTilde);
 		CommonOps.mult(priorMean, muTilde, mumu);
 		double [] mu_tile = mumu.getData();
-
-		betas[k] = fcmvn.sample(mu_tile);
+		betas[k] = mvns.sample(mu_tile);
 
 		if(currentIteration > (((double)burnIn/100)*iterationsToRun)) {
 			if(currentIteration % lag  == 0) {
