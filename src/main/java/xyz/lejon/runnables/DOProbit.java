@@ -75,7 +75,7 @@ public class DOProbit {
 				config.activateSubconfig(conf);
 				LoggingUtils.doInitialLogging(cp, (Configuration) config, DOProbit.class.getName(), "initial_log", null, lu.getLogDir().getAbsolutePath());
 				
-				System.out.println("Running SunConf: " + conf);
+				System.out.println("Running SubConf: " + conf);
 				System.out.println("Using Config: " + config.whereAmI());
 				String dataset_fn = config.getTrainingsetFilename();
 				System.out.println("Using dataset: " + dataset_fn);
