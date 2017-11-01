@@ -18,7 +18,7 @@ public class ParallelDOSampler extends AbstractParallelDOSampler implements DOSa
 		setupSampler(config, xs, noClasses);
 	}
 
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		double [] zColk = zsT[k];
 		for (int beta = 0; beta < betas.length; beta++) {	
 			System.out.println(currentIteration + ": Sample beta[" + k +"][" + beta + "]");
@@ -31,6 +31,7 @@ public class ParallelDOSampler extends AbstractParallelDOSampler implements DOSa
 			
 			betas[k][beta] = nd.sample();
 		}
+		return betas[k];
 	}
 	
 	@Override

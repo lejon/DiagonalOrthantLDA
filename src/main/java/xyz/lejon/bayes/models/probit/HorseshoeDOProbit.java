@@ -295,7 +295,7 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 	}
 
 	@Override
-	public abstract void sampleBeta(int k);
+	public abstract double [] sampleBeta(int k);
 	
 	@Override
 	public void postSample() {

@@ -151,7 +151,7 @@ public abstract class AbstractDOSampler {
 		
 	}
 
-	public abstract void sampleBeta(int k); // ??
+	public abstract double [] sampleBeta(int k); // ??
 	
 	public void sampleZ(int row) {
 		for (int k = 0; k < noClasses; k++) {

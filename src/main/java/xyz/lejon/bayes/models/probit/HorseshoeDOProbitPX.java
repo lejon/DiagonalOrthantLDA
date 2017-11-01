@@ -145,7 +145,7 @@ public class HorseshoeDOProbitPX extends SerialDOSampler {
 	}
 	
 	@Override
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		double [] zColk = zsT[k];
 		
 		Theta[k]  = calcTheta(betas[k], Sigma, Delta, Lambda[k]);
@@ -184,6 +184,7 @@ public class HorseshoeDOProbitPX extends SerialDOSampler {
 
 		MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(mu_tile, Stilde);
 		betas[k] = mvn.sample();
+		return betas[k];
 	}
 	
 	public void sampleBetaOLD(int k) {

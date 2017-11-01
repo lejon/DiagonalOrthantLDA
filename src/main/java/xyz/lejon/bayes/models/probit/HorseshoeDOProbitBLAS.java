@@ -52,7 +52,7 @@ public class HorseshoeDOProbitBLAS extends HorseshoeDOProbit {
 	}
 
 	@Override
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		// Rebuild updated precision matrix
 		for (int i = 0; i < myPrecision.rows; i++) {
 			double update;
@@ -83,6 +83,7 @@ public class HorseshoeDOProbitBLAS extends HorseshoeDOProbit {
 		}
 		Lambda[k] = sampleLambda(Tau[k], betas[k], Lambda[k], Sigma[k]);
 		Tau[k]    = sampleTau(Tau[k], betas[k], Lambda[k], Sigma[k], useIntecept);
+		return betas[k];
 	}
 	
 	public static double [] sampleBeta(DoubleMatrix mu, DoubleMatrix Sigma, double sigma) {

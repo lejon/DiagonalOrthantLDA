@@ -46,7 +46,7 @@ public class HorseshoeDOProbitEJML extends HorseshoeDOProbit {
 	}
 
 	@Override
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		double [] zColk = zsT[k];
 		
 		Tau[k]    = sampleTau(Tau[k], betas[k], Lambda[k], Sigma[k], useIntecept);
@@ -81,5 +81,6 @@ public class HorseshoeDOProbitEJML extends HorseshoeDOProbit {
 
 		FastMVNSamplerEJML mvns = new FastMVNSamplerEJML(localMu, myPrecision);
 		betas[k] = mvns.sample();
+		return betas[k];
 	}
 }

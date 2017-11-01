@@ -60,7 +60,7 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
 	}
 
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		double [] zColk = zsT[k];
 
 		DenseMatrix64F zColKd = new DenseMatrix64F(zColk.length,1);
@@ -72,5 +72,6 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 		double [] mu_tile = localMu.getData();
 
 		betas[k] = mvns.sample(mu_tile);
+		return betas[k];
 	}
 }

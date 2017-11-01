@@ -58,7 +58,7 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
 	}
 
-	public void sampleBeta(int k) {
+	public double [] sampleBeta(int k) {
 		double [] zColk = zsT[k];
 
 		DenseMatrix64F zColKd = new DenseMatrix64F(zColk.length,1);
@@ -76,6 +76,7 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 				}
 			}
 		}
+		return betas[k];
 	}
 	
 	@Override
