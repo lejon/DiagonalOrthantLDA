@@ -7,9 +7,7 @@ import static xyz.lejon.sampling.BasicRDists.runif;
 import static xyz.lejon.utils.MatrixOps.rnorm;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import xyz.lejon.configuration.DOConfiguration;
 import xyz.lejon.sampling.BasicRDists;
@@ -24,9 +22,6 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 	double [][] Lambda;
 	double c = 100;
 	
-	static List<double []> sampledLambdas = new ArrayList<double []>();
-	static List<Double> sampledTaus       = new ArrayList<Double>();
-
 	public HorseshoeDOProbit(DOConfiguration config, double[][] xs, int[] ys, int noClasses) throws IOException {
 		super(config, xs, ys, noClasses);
 		Lambda = new double[noClasses][];
@@ -134,7 +129,6 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 			throw new IllegalStateException(buildTauErrorString(Tau, beta, ub, ui, muHati, shape, bound, scale, upper, u, etaHatiNew, Lambda));
 		}
 		double newTau = 1 / sqrt(etaHatiNew);
-		sampledTaus.add(newTau);
 		return newTau;
 	}
 	
@@ -212,7 +206,6 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 			double lambdaNew = 1 / sqrt(gammaNew); 
 			newLambdas[i] = lambdaNew;
 		}
-		sampledLambdas.add(newLambdas);
 		return newLambdas;
 	}
 	
@@ -226,82 +219,12 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 				+ MatrixOps.arrToStr(beta, " Betas");
 	}
 	
-	public void printSampledTaus(int k, int limit) {
-		int pCnt = 0;
-		System.out.println("Sampled Taus are: ");
-		int i = 0;
-		int sampleCnt = 0;
-		double [] tv = new double[k];
-		for(Double t : sampledTaus) {
-			tv[i++] = t;
-			if(pCnt%k==0) {
-				boolean doPrint = (sampledTaus.size()/k)-sampleCnt<limit;
-				if(doPrint)
-					System.out.print(MatrixOps.arrToStr(tv, "[" + sampleCnt + "] Tau "));
-				sampleCnt++;
-				tv = new double[k];
-				i = 0;
-				if(doPrint) System.out.println();
-			}
-			pCnt++;
-		}
-	}
-
-	public void printTauMeans(int k) {
-		int i = 0;
-		double [][] tv = new double[sampledTaus.size()][k];
-		int row = 0;
-		for(Double t : sampledTaus) {
-			tv[row][i++] = t;
-			if(i%k==0) {
-				row++;
-				i = 0;
-			}
-		}
-		System.out.println("Sampled Taus Means are: " + MatrixOps.arrToStr(MatrixOps.colMeans(tv)));
-	}
-
-	public void printSampledLambdas(int k, int limit) {
-		int pCnt = 0;
-		int sampleCnt = 0;
-		System.out.println("Sampled Lambdas are: ");
-		for(double [] t : sampledLambdas) {
-			boolean doPrint = (sampledLambdas.size()/k)-sampleCnt<limit;
-			if(doPrint)
-				System.out.println(MatrixOps.arrToStr(t, "[" + sampleCnt + "] Lambda "));
-			if(pCnt%k==0) {
-				if(doPrint) System.out.println();
-				sampleCnt++;
-			}
-			pCnt++;
-		}
-	}
-	
-	public void printLambdaMeans(int k) {
-		int row = 0;
-		int ci = 0;
-		double [][][] lambdas = new double[k][sampledLambdas.size()/k][];
-		for(double [] t : sampledLambdas) {
-			lambdas[ci++][row] = t;
-			if(ci%k==0) {
-				row++;
-				ci = 0;
-			}
-		}
-		
-		for (int i = 0; i < k; i++) {			
-			System.out.println(i + ": Sampled Lambda Means are: " + MatrixOps.arrToStr(MatrixOps.colMeans(lambdas[i])));
-		}
-	}
-
 	@Override
 	public abstract double [] sampleBeta(int k);
 	
 	@Override
 	public void postSample() {
 		super.postSample();
-		printTauMeans(noClasses);
-		printLambdaMeans(noClasses);
 	}
 
 }
