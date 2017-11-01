@@ -15,8 +15,8 @@ import xyz.lejon.configuration.DOConfiguration;
 import xyz.lejon.sampling.BasicRDists;
 import xyz.lejon.utils.MatrixOps;
 
-//public class HorseshoeDOProbit extends MultivariateParallelDOSampler {
-public abstract class HorseshoeDOProbit extends SerialDOSampler {
+public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
+//public abstract class HorseshoeDOProbit extends SerialDOSampler {
 
 	MatrixOps mo = new MatrixOps();
 	double [] Tau;

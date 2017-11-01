@@ -43,8 +43,8 @@ public abstract class AbstractDOSampler {
 	protected DenseMatrix64F priorPrecision;
 	protected DenseMatrix64F priorMean;
 	protected double [][] Stilde;
-	protected int iterinter = 10;
-	private int noSampledBeta;
+	protected int iterinter = 100;
+	protected int noSampledBeta;
 	boolean useIntecept = false;
 	boolean logLoglikelihood = false;
 	protected String loggingPath;

@@ -3,10 +3,13 @@ package xyz.lejon.bayes.models.probit;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
+import cc.mallet.topics.LogState;
+import cc.mallet.util.LDAUtils;
 import xyz.lejon.utils.MatrixOps;
 
 public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 	private static ForkJoinPool pool = new ForkJoinPool();
+
 	/* (non-Javadoc)
 	 * @see models.DOSampler#sample(int)
 	 */
@@ -14,9 +17,9 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 	public void sample(int iterations) {	
 		iterationsToRun = iterations;
 		for (int iter = 0; iter < iterations; iter++) {
-			System.out.println("Iter: " + iter);
+			preIteration(iter);
 			currentIteration = iter;
-			if(iter % 100 == 0) {
+			if(iter % 10 == 0) {
 				System.out.println("Iter: " + iter);
 				if(printBeta) {
 					System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));
@@ -35,12 +38,31 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 
 			BetaSampler process = new BetaSampler(0,noClasses,1);                
 			pool.invoke(process);
+			
+			if(currentIteration > (((double)burnIn/100)*iterationsToRun)) {
+				for (int k = 0; k < noClasses; k++) {
+				if(currentIteration % lag  == 0) {
+					for (int beta = 0; beta < betas[k].length; beta++) {
+						betaMeans[k][beta] += betas[k][beta];
+					}
+					sampledBetas[k].add(betas[k]);
+					noSampledBeta++;
+				}
+				}
+			}
 
 			if(traceBeta) {
 				logBetas();
 			}
+			postIteration(iter);
+			if (logLoglikelihood && currentIteration % iterinter == 0) {
+				double logLik = doProbitLikelihood();	
+				LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
+				LDAUtils.logLikelihoodToFile(logState);					
+			}
 		}
 		iterationsRun = iterations;
+		postSample();
 	}
 
 	class ZSampler extends RecursiveAction {
