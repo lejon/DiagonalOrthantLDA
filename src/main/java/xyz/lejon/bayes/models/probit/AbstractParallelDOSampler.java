@@ -127,8 +127,8 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 		protected void compute() {
 			try {
 				if ( (endClass-startClass) <= limit ) {
-					for (int j = startClass; j < endClass; j++) {
-						sampleBeta(j);
+					for (int k = startClass; k < endClass; k++) {
+						sampleBeta(k);
 					}
 				}
 				else {
