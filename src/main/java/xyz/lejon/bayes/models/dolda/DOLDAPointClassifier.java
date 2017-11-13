@@ -12,18 +12,13 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import xyz.lejon.configuration.DOLDAConfigUtils;
-import xyz.lejon.configuration.DOLDAConfiguration;
-import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
-import xyz.lejon.runnables.ExperimentUtils;
-import xyz.lejon.utils.EnhancedConfusionMatrix;
-import xyz.lejon.utils.MatrixOps;
-import xyz.lejon.utils.Timer;
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.Trial;
 import cc.mallet.configuration.LDAConfiguration;
+import cc.mallet.topics.LDAGibbsSampler;
 import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
+import cc.mallet.topics.TopicModelDiagnosticsPlain;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.AlphabetCarrying;
 import cc.mallet.types.CrossValidationIterator;
@@ -33,6 +28,13 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelVector;
 import cc.mallet.util.LDAUtils;
 import cc.mallet.util.Randoms;
+import xyz.lejon.configuration.DOLDAConfigUtils;
+import xyz.lejon.configuration.DOLDAConfiguration;
+import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
+import xyz.lejon.runnables.ExperimentUtils;
+import xyz.lejon.utils.EnhancedConfusionMatrix;
+import xyz.lejon.utils.MatrixOps;
+import xyz.lejon.utils.Timer;
 
 /**
  * This class is really just a big hack trying to get around the fact that MALLET
@@ -343,8 +345,27 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		}
 		File lgDir = config.getLoggingUtil().getLogDir();
 		
-		// Save example betas
 		String foldPrefix = "fold-";
+		
+		// Save document topic diagnostics
+		if(config.saveDocumentTopicDiagnostics()) {
+			if(dolda instanceof LDAGibbsSampler) {			
+				LDAGibbsSampler model = (LDAGibbsSampler) dolda;
+				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
+				TopicModelDiagnosticsPlain tmd = new TopicModelDiagnosticsPlain(model, requestedWords);
+				System.out.println("Topic model diagnostics:");
+				System.out.println(tmd.toString());			
+				String docTopicDiagFn = config.getDocumentTopicDiagnosticsOutputFilename();
+				PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/" + foldPrefix + fold + "-" + docTopicDiagFn);
+				out.println(tmd.topicsToCsv());
+				out.flush();
+				out.close();
+			} else {
+				throw new RuntimeException("Sampler is not an instance of an LDAGibbsSampler, cannot exctract statistics");
+			}
+		}
+		
+		// Save example betas
 		if(config.getSaveBetas()) {
 			ExperimentUtils.saveBetas(lgDir, allColnames, trainXs[0].length, dolda.getBetas(), config.getIdMap(), foldPrefix + fold + "-" + config.betasOutputFn());
 		}
