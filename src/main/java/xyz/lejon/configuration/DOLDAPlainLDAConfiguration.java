@@ -362,4 +362,24 @@ public class DOLDAPlainLDAConfiguration extends SubConfig implements LDAConfigur
 	public int getAliasPoissonThreshold(int aliasPoissonDefaultThreshold) {
 		return LDAConfiguration.ALIAS_POISSON_DEFAULT_THRESHOLD;
 	}
+
+	@Override
+	public String getDocumentTopicDiagnosticsOutputFilename() {
+		return parent.getDocumentTopicDiagnosticsOutputFilename();
+	}
+
+	@Override
+	public String getFileRegex(String defaultName) {
+		return parent.getFileRegex(defaultName);
+	}
+
+	@Override
+	public String getTestDatasetFilename() {
+		return parent.getTestDatasetFilename();
+	}
+
+	@Override
+	public boolean saveDocumentTopicDiagnostics() {
+		return parent.saveDocumentTopicDiagnostics();
+	}
 }

@@ -666,4 +666,26 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 		String key = "save_doc_theta_estimate";
 		return getBooleanProperty(key);
 	}
+
+	@Override
+	public String getDocumentTopicDiagnosticsOutputFilename() {
+		return getStringProperty("doc_topic_diagnostics_filename");
+	}
+
+	@Override
+	public String getFileRegex(String string) {
+		String ext = getStringProperty("file_regex");
+		return (ext == null || ext.length() == 0) ? string : ext;
+	}
+
+	@Override
+	public String getTestDatasetFilename() {
+		return getStringProperty("test_dataset");
+	}
+
+	@Override
+	public boolean saveDocumentTopicDiagnostics() {
+		String key = "save_doc_topic_diagnostics";
+		return getBooleanProperty(key);
+	}
 }

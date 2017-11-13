@@ -204,4 +204,12 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	String getDocumentTopicThetaOutputFilename();
 
 	boolean saveDocumentThetaEstimate();
+
+	String getDocumentTopicDiagnosticsOutputFilename();
+
+	String getFileRegex(String defaultName);
+
+	String getTestDatasetFilename();
+
+	boolean saveDocumentTopicDiagnostics();
 }
