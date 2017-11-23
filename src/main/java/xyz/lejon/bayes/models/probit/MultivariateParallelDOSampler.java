@@ -22,10 +22,10 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 	protected double c = 10;
 	FastMVNSamplerEJML mvns; 
 
-	public MultivariateParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys, int noClasses) throws IOException {
+	public MultivariateParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys) throws IOException {
 		this.xs = xs;
 		this.ys = ys;
-		this.noClasses = noClasses;
+		this.noClasses = config.getLabelMap().keySet().size();
 		setupSampler(config, xs, noClasses);
 		double [] tmpMean = new double[noCovariates];
 		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);

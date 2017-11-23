@@ -21,8 +21,8 @@ public class HorseshoePlusDOProbit extends SerialDOSampler {
 	PositiveHalfCauchy phc = new PositiveHalfCauchy(0.0,1);
 	double [][] precMtrx;
 
-	public HorseshoePlusDOProbit(DOConfiguration config, double[][] xs, int[] ys, int noClasses) throws IOException {
-		super(config, xs, ys, noClasses);
+	public HorseshoePlusDOProbit(DOConfiguration config, double[][] xs, int[] ys) throws IOException {
+		super(config, xs, ys);
 		precMtrx = new double[Xd.numCols][Xd.numCols];
 		
 		PositiveHalfCauchy drawTau = new PositiveHalfCauchy(0.0,1.0/noClasses);

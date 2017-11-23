@@ -11,10 +11,10 @@ public class ParallelDOSampler extends AbstractParallelDOSampler implements DOSa
 	NormalDistribution nd;
 	protected double c = 10;
 
-	public ParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys, int noClasses) throws IOException {
+	public ParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys) throws IOException {
 		this.xs = xs;
 		this.ys = ys;
-		this.noClasses = noClasses;
+		this.noClasses = config.getLabelMap().keySet().size();
 		setupSampler(config, xs, noClasses);
 	}
 

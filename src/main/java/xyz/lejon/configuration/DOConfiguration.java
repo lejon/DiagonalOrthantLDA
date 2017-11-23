@@ -1,6 +1,7 @@
 package xyz.lejon.configuration;
 
 import java.io.IOException;
+import java.util.Map;
 
 import xyz.lejon.utils.DataSet;
 import xyz.lejon.utils.LoggingUtils;
@@ -54,5 +55,12 @@ public interface DOConfiguration {
 	public String getTrainingsetFilename();
 	
 	public String getTestsetFilename();
+	
+	String[] getLabels();
+
+	Map<String, Integer> getLabelMap();
+
+	Map<Integer, String> getIdMap();
+	
 	int getIterationPrintInterval();
 }

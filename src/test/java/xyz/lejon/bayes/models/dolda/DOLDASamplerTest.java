@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -13,6 +12,8 @@ import org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import cc.mallet.classify.Trial;
+import cc.mallet.types.InstanceList;
 import xyz.lejon.MarkerIFSmokeTest;
 import xyz.lejon.bayes.models.probit.DOEvaluation;
 import xyz.lejon.bayes.models.probit.DOSampler;
@@ -30,8 +31,6 @@ import xyz.lejon.utils.EnhancedConfusionMatrix;
 import xyz.lejon.utils.LoggingUtils;
 import xyz.lejon.utils.MatrixOps;
 import xyz.lejon.utils.Timer;
-import cc.mallet.classify.Trial;
-import cc.mallet.types.InstanceList;
 
 @Category(MarkerIFSmokeTest.class)
 public class DOLDASamplerTest {
@@ -419,9 +418,7 @@ public class DOLDASamplerTest {
 		double [][] xs = trainingSetData.getX();
 		int [] ys = trainingSetData.getY();
 
-		Map<String,Integer> labelMap = trainingSetData.getLabelToId();
-
-		DOSampler doProbit = xyz.lejon.bayes.models.probit.ModelFactory.get(config, xs, ys, labelMap.size());
+		DOSampler doProbit = xyz.lejon.bayes.models.probit.ModelFactory.get(config, xs, ys);
 
 		System.out.println("X is: " + MatrixOps.doubleArrayToPrintString(xs, 5));
 		

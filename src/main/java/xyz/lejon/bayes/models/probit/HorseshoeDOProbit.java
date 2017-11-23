@@ -22,8 +22,8 @@ public abstract class HorseshoeDOProbit extends MultivariateParallelDOSampler {
 	double [][] Lambda;
 	double c = 100;
 	
-	public HorseshoeDOProbit(DOConfiguration config, double[][] xs, int[] ys, int noClasses) throws IOException {
-		super(config, xs, ys, noClasses);
+	public HorseshoeDOProbit(DOConfiguration config, double[][] xs, int[] ys) throws IOException {
+		super(config, xs, ys);
 		Lambda = new double[noClasses][];
 		for (int i = 0; i < Lambda.length; i++) {
 			Lambda[i] = new double[noCovariates];

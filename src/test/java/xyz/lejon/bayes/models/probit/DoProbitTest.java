@@ -3,7 +3,6 @@ package xyz.lejon.bayes.models.probit;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -37,9 +36,8 @@ public class DoProbitTest {
 
 		double [][] xs = trainingSetData.getX();
 		int [] ys = trainingSetData.getY();
-		Map<String,Integer> labelMap = trainingSetData.getLabelToId();
 
-		DOSampler doProbit  = ModelFactory.get(config, xs, ys, labelMap.size());
+		DOSampler doProbit  = ModelFactory.get(config, xs, ys);
 		//DOSampler doProbit  = new MultivariateParallelDOSampler(config, xs,ys,labelMap.size());
 		long sstart = System.currentTimeMillis();
 		doProbit.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));
@@ -116,9 +114,8 @@ public class DoProbitTest {
 
 		double [][] xs = trainingSetData.getX();
 		int [] ys = trainingSetData.getY();
-		Map<String,Integer> labelMap = trainingSetData.getLabelToId();
 
-		DOSampler doProbit  = ModelFactory.get(config, xs, ys, labelMap.size());
+		DOSampler doProbit  = ModelFactory.get(config, xs, ys);
 		//DOSampler doProbit  = new MultivariateParallelDOSampler(config, xs,ys,labelMap.size());
 		long sstart = System.currentTimeMillis();
 		doProbit.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));

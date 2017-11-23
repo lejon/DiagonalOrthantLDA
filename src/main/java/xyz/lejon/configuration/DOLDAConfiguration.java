@@ -2,7 +2,6 @@ package xyz.lejon.configuration;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.Map;
 
 import cc.mallet.types.InstanceList;
 import xyz.lejon.bayes.models.dolda.DOLDADataSet;
@@ -22,12 +21,6 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	String getTextDatasetTrainFilename();
 	
 	String getTextDatasetTestFilename();
-
-	String[] getLabels();
-
-	Map<String, Integer> getLabelMap();
-
-	Map<Integer, String> getIdMap();
 	
 	public LoggingUtils getLoggingUtil();
 

@@ -36,8 +36,8 @@ public class HorseshoeDOProbitPX extends SerialDOSampler {
 	double [][] Lambda;
 	double [][] precMtrx;
 	
-	public HorseshoeDOProbitPX(DOConfiguration config, double[][] xs, int[] ys, int noClasses) throws IOException {
-		super(config, xs, ys, noClasses);
+	public HorseshoeDOProbitPX(DOConfiguration config, double[][] xs, int[] ys) throws IOException {
+		super(config, xs, ys);
 		Theta = new double[noClasses][];
 		for (int i = 0; i < Theta.length; i++) {
 			Theta[i] = new double[noCovariates];

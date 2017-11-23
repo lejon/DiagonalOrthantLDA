@@ -55,9 +55,8 @@ public class BasicSamplerTest {
 
 			double [][] xs = trainingSetData.getX();
 			int [] ys = trainingSetData.getY();
-			Map<String,Integer> labelMap = trainingSetData.getLabelToId();
 
-			DOSampler doProbit  = new SerialDOSampler(config, xs,ys,labelMap.size());
+			DOSampler doProbit  = new SerialDOSampler(config, xs,ys);
 			doProbit.sample(config.getNoIterations(DOConfiguration.ITERATIONS_DEFAULT));
 
 			double [][] betas = doProbit.getBetas();

@@ -277,21 +277,6 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 				(getStringProperty("log_phi_density").equalsIgnoreCase("true") 
 						|| getStringProperty("log_phi_density").equals("1"));
 	}
-	
-	@Override
-	public String[] getLabels() {
-		return trainingSet.getLabels();
-	}
-
-	@Override
-	public Map<String, Integer> getLabelMap() {
-		return trainingSet.getLabelToId();
-	}
-	
-	@Override
-	public Map<Integer, String> getIdMap() {
-		return trainingSet.getIdToLabels();
-	}
 
 	@Override
 	public String getSamplerClass(String modelDefault) {

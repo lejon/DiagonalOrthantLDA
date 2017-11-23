@@ -19,8 +19,8 @@ public class HorseshoeDOProbitBLAS extends HorseshoeDOProbit {
 	DoubleMatrix myXdtrans;
 	DoubleMatrix myPrecision;
 
-	public HorseshoeDOProbitBLAS(DOConfiguration config, double[][] xs, int[] ys, int noClasses) throws IOException {
-		super(config, xs, ys, noClasses);
+	public HorseshoeDOProbitBLAS(DOConfiguration config, double[][] xs, int[] ys) throws IOException {
+		super(config, xs, ys);
 		Lambda = new double[noClasses][];
 		for (int i = 0; i < Lambda.length; i++) {
 			Lambda[i] = new double[noCovariates];

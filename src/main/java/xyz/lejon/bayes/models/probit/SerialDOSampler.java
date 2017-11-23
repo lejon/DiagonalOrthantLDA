@@ -23,10 +23,10 @@ public class SerialDOSampler extends AbstractDOSampler implements DOSampler {
 	protected double c = 0.1;
 	FastMVNSamplerEJML mvns; 
 
-	public SerialDOSampler(DOConfiguration config, double [][] xs, int [] ys, int noClasses) throws IOException {
+	public SerialDOSampler(DOConfiguration config, double [][] xs, int [] ys) throws IOException {
 		this.xs = xs;
 		this.ys = ys;
-		this.noClasses = noClasses;
+		this.noClasses = config.getLabelMap().keySet().size();
 		setupSampler(config, xs, noClasses);
 	}
 	

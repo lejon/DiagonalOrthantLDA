@@ -88,10 +88,9 @@ public class DOProbit {
 				double [][] xs = trainingSetData.getX();
 				int [] ys = trainingSetData.getY();
 				String [] labels = trainingSetData.getLabels();
-				Map<String,Integer> labelMap = trainingSetData.getLabelToId();
 				Map<Integer,String> idMap = trainingSetData.getIdToLabels();
 
-				DOSampler doProbit = ModelFactory.get(config, xs, ys, labelMap.size());
+				DOSampler doProbit = ModelFactory.get(config, xs, ys);
 				
 				System.out.println("Using sampler: " + doProbit.getClass().getName());
 				System.out.println("X is: " + MatrixOps.doubleArrayToPrintString(xs, 5));

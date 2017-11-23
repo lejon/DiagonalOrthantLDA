@@ -880,4 +880,24 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 	public String getTrainingsetFilename() {
 		return getStringProperty("trainingset");
 	}
+	
+	@Override
+	public String[] getLabels() {
+		return trainingSet.getLabels();
+	}
+
+	@Override
+	public Map<String, Integer> getLabelMap() {
+		return trainingSet.getLabelToId();
+	}
+	
+	@Override
+	public Map<Integer, String> getIdMap() {
+		return trainingSet.getIdToLabels();
+	}
+
+	@Override
+	public int getIterationPrintInterval() {
+		return getInteger("iteration_print_interval",ITERATION_PRINT_INTERVAL_DEFAULT).intValue();
+	}
 }
