@@ -158,6 +158,7 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 	@Override
 	public void sample(int iterations) throws IOException {
 		// Only do Z sampling if we have text data
+		// If we do Z sampling, the probit sampling is done in the preIteration method
 		if(data.size()>0) {
 			super.sample(iterations);
 		} else {
