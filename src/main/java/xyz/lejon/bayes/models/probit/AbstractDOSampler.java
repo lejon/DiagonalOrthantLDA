@@ -63,6 +63,7 @@ public abstract class AbstractDOSampler {
 		
 		noCovariates = xs[0].length;
 		noRows = xs.length;
+		iterinter = config.getIterationPrintInterval();
 		
 		loggingPath = config.getLoggingUtil().getLogDir().getAbsolutePath();
 		if(loggingPath!=null && loggingPath.length()>0) {

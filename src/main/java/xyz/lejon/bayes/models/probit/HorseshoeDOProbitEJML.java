@@ -40,8 +40,6 @@ public class HorseshoeDOProbitEJML extends HorseshoeDOProbit {
 		}
 		DenseMatrix64F Xdtrans = Xd.copy();
 		CommonOps.transpose(Xdtrans);
-		//printBeta = true;
-		iterinter = 100;
 		System.out.println("################# Running HORSESHOE EJML #################");
 	}
 

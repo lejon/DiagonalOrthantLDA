@@ -19,7 +19,7 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 		for (int iter = 0; iter < iterations; iter++) {
 			preIteration(iter);
 			currentIteration = iter;
-			if(iter % 10 == 0) {
+			if(iter % iterinter == 0) {
 				System.out.println("Iter: " + iter);
 				if(printBeta) {
 					System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));

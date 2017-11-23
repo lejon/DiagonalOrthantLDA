@@ -10,6 +10,7 @@ public interface DOConfiguration {
 	
 	public static String PROGRAM_NAME = "DOProbit";
 	public static int ITERATIONS_DEFAULT = 200;
+	public static int ITERATION_PRINT_INTERVAL_DEFAULT = 100;
 	public static String MODEL_DEFAULT = "xyz.lejon.bayes.models.probit.SerialDOSampler";
 	
 	public DataSet loadTrainingSet() throws IOException;
@@ -53,4 +54,5 @@ public interface DOConfiguration {
 	public String getTrainingsetFilename();
 	
 	public String getTestsetFilename();
+	int getIterationPrintInterval();
 }
