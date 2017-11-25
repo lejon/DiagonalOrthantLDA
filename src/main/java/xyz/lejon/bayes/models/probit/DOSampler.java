@@ -6,5 +6,5 @@ public interface DOSampler {
 	void sample(int iterations);
 	double[][] getBetas();
 	List<double[]>[] getSampledBetas();
-	double doProbitLikelihood();
+	double calcDoProbitLogLikelihood(double[][] xs, int[] ys, double[][] betas);
 }

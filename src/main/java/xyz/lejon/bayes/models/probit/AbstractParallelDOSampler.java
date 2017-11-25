@@ -19,13 +19,6 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 		for (int iter = 0; iter < iterations; iter++) {
 			preIteration(iter);
 			currentIteration = iter;
-			if(iter % iterinter == 0) {
-				System.out.println("Iter: " + iter);
-				if(printBeta) {
-					System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));
-					System.out.println();
-				}
-			}
 
 			int lowerLimit = 10;
 			if(noRows < lowerLimit ) {
@@ -55,10 +48,19 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 				logBetas();
 			}
 			postIteration(iter);
-			if (logLoglikelihood && currentIteration % iterinter == 0) {
-				double logLik = doProbitLikelihood();	
-				LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
-				LDAUtils.logLikelihoodToFile(logState);					
+			if (currentIteration % iterinter == 0) {
+				String llString = "";
+				if(logLoglikelihood) {
+					double logLik = calcDoProbitLogLikelihood(xs, ys, betas);
+					llString = "(LL:" + logLik + ")";
+					LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
+					LDAUtils.logLikelihoodToFile(logState);					
+				}
+				System.out.println("Iter: " + iter + " " + llString);
+				if(printBeta) {
+					System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));
+					System.out.println();
+				}
 			}
 		}
 		iterationsRun = iterations;

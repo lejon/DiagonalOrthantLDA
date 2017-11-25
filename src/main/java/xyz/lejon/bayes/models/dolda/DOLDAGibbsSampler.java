@@ -23,6 +23,7 @@ import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.util.LDAUtils;
+import xyz.lejon.bayes.models.probit.AbstractDOSampler;
 import xyz.lejon.configuration.DOLDAConfiguration;
 import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
 import xyz.lejon.sampling.NegativeTruncatedNormal;
@@ -516,90 +517,9 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 	}
 
 	protected double doProbitLikelihood() {
-		jdistlib.Normal nd = new jdistlib.Normal(0,1.0);
-		double DOpart_loglik = 0;
-
 		// Calculate the mean matrix (same as used in sampling beta), X%*%eta
 		// Size should be D \times L (no docs times no classes). [i] is row, [j] is col
 		double [][] zbar_d = getSupervsedTopicIndicatorMeans();
-		DoubleMatrix X = new DoubleMatrix(MatrixOps.concatenate(xs,zbar_d));
-		DoubleMatrix dBetas = new DoubleMatrix(betas);
-
-		DoubleMatrix dBetasT = dBetas.transpose();
-		// Måns du hade inte transpose i koden men det var väl bara en bug?
-		// Ja, det var det. 
-		DoubleMatrix dXBetas = X.mmul(dBetasT);
-
-		double [][] XBeta  =  dXBetas.toArray2();
-		
-		// Iterate over all documents to calculate documents
-		// ys is the variable indicating class index
-		for (int d = 0; d < XBeta.length; d++){
-			double DOloglik1;
-			double DOloglik2;
-
-			// First part
-			DOloglik1 = 0;
-			for (int l = 0; l < XBeta[d].length; l++){
-				// For ALL documents with class 'l'
-				if(l == ys[d]) {
-					DOloglik1 =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
-				// For documents with class != 'l'
-				} else {
-					DOloglik1 =+ Math.log(nd.cumulative(-XBeta[d][l]));
-				}
-			}
-			
-			// Is the above correct?? Looks to me in the
-			// derivation like it should be the below, but then 
-			// there is a sum over J that is missing (or perhaps 
-			// it is implicit) in the derivation, the
-			// y_d = j I assume means this?
-			// TODO: No. It should be allright. We do one sweep over the categories.
-			// In the code below we loop over all categories.
-			/*
-			for (int j = 0; j < invCDFbeta[d].length; j++){
-				DOloglik1 =+ Math.log(1 - invCDFbeta[d][j]);
-				// For documents with class != 'l'
-					for (int l = 0; l < invCDFbeta[d].length; l++){
-						if(j != l) {
-							DOloglik1 =+ Math.log(invCDFbeta[d][j]);
-						}
-					}
-			}*/
-
-			// Second part
-			double DOlik2 = 0;
-			for (int j = 0; j < XBeta[d].length; j++){
-				double toExp = 0;
-				for (int l = 0; l < XBeta[d].length; l++){
-					if(j == l) {
-						toExp =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
-					} else {
-						toExp =+ Math.log(nd.cumulative(-XBeta[d][l]));
-					}						
-				}
-				DOlik2 =+ Math.exp(toExp);
-			}
-			DOloglik2 = Math.log(DOlik2);
-			
-			// Should the second part be?
-			// TODO: Isn't it the same calculation?
-			/*
-			for (int j = 0; j < invCDFbeta[d].length; j++){
-				double toExp = 0;
-				toExp =+ Math.log(1 - invCDFbeta[d][j]);
-				for (int l = 0; l < invCDFbeta[d].length; l++){
-					if(l != j) {
-						toExp =+ Math.log(invCDFbeta[d][l]);
-					}						
-				}
-				DOloglik2 =+ Math.exp(toExp);
-			}*/
-
-			// Sum everything together
-			DOpart_loglik =+ DOloglik1 - DOloglik2;
-		}
-		return DOpart_loglik;
+		return AbstractDOSampler.doProbitLogLikelihood(MatrixOps.concatenate(xs,zbar_d), ys, betas);
 	}
 }

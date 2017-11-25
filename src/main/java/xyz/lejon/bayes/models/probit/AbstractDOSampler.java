@@ -104,13 +104,6 @@ public abstract class AbstractDOSampler {
 			for (int iter = 0; iter < iterations; iter++) {
 				preIteration(iter);
 				currentIteration = iter;
-				if(iter % iterinter == 0) {
-					System.out.println("Iter: " + iter);
-					if(printBeta) {
-						System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas,5,5,20));
-						System.out.println();
-					}
-				}	
 				for (int k = 0; k < noClasses; k++) {
 					sampleBeta(k);
 					if(currentIteration > (((double)burnIn/100)*iterationsToRun)) {
@@ -130,12 +123,20 @@ public abstract class AbstractDOSampler {
 					logBetas();
 				}
 				postIteration(iter);
-				if (logLoglikelihood && currentIteration % iterinter == 0) {
-					double logLik = doProbitLikelihood();	
-					LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
-					LDAUtils.logLikelihoodToFile(logState);					
-				}
-			}
+				if (currentIteration % iterinter == 0) {
+					String llString = "";
+					if(logLoglikelihood) {
+						double logLik = calcDoProbitLogLikelihood(xs, ys, betas);
+						llString = "(LL:" + logLik + ")";
+						LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
+						LDAUtils.logLikelihoodToFile(logState);					
+					}
+					System.out.println("Iter: " + iter + " "+ llString);
+					if(printBeta) {
+						System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));
+						System.out.println();
+					}
+				}			}
 		} catch (Exception e) {
 			postSample();
 			throw e;
@@ -241,7 +242,11 @@ public abstract class AbstractDOSampler {
 		}
 	}
 	
-	public double doProbitLikelihood() {
+	public double calcDoProbitLogLikelihood(double[][] xs, int[] ys, double[][] betas) {
+		return doProbitLogLikelihood(xs, ys, betas); 
+	}
+	
+	public static double doProbitLogLikelihood(double[][] xs, int[] ys, double[][] betas) {
 		jdistlib.Normal nd = new jdistlib.Normal(0,1.0);
 		double loglik = 0;
 
@@ -259,33 +264,45 @@ public abstract class AbstractDOSampler {
 			double DOloglik2;
 
 			DOloglik1 = 0;
+			// First part: Sum and product over J  (in article)
 			for (int l = 0; l < XBeta[d].length; l++){
 				// For ALL documents with class 'l'
 				if(l == ys[d]) {
-					DOloglik1 =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
+					double logVal = negativeInfToMinValue(Math.log(1 - nd.cumulative(-XBeta[d][l])));
+					DOloglik1 += logVal;
 				// For documents with class != 'l'
 				} else {
-					DOloglik1 =+ Math.log(nd.cumulative(-XBeta[d][l]));
+					double logVal = negativeInfToMinValue(Math.log(nd.cumulative(-XBeta[d][l])));
+					DOloglik1 += logVal;
 				}
 			}
 			
+			// Second part: Normalizing constant
 			double DOlik2 = 0;
 			for (int j = 0; j < XBeta[d].length; j++){
 				double toExp = 0;
 				for (int l = 0; l < XBeta[d].length; l++){
 					if(j == l) {
-						toExp =+ Math.log(1 - nd.cumulative(-XBeta[d][l]));
+						double logVal = negativeInfToMinValue(Math.log(1 - nd.cumulative(-XBeta[d][l])));
+						toExp += logVal;
 					} else {
-						toExp =+ Math.log(nd.cumulative(-XBeta[d][l]));
+						double logVal = negativeInfToMinValue(Math.log(nd.cumulative(-XBeta[d][l])));
+						toExp += logVal;
 					}						
 				}
-				DOlik2 =+ Math.exp(toExp);
+				DOlik2 += Math.exp(toExp);
 			}
 			DOloglik2 = Math.log(DOlik2);
 			
-			loglik =+ DOloglik1 - DOloglik2;
+			// Divide (i.e subtract log normalizing constant) with normalizing constant to get normalized LL
+			loglik += DOloglik1 - DOloglik2;
 		}
 		return loglik;
+	}
+
+	private static double negativeInfToMinValue(double log) {
+		if(log==Double.NEGATIVE_INFINITY) return Double.MIN_VALUE;
+		return log;
 	}
 
 }
