@@ -673,4 +673,10 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 		String key = "save_doc_topic_diagnostics";
 		return getBooleanProperty(key);
 	}
+
+	@Override
+	public String likelihoodType() {
+		String key = "log_likelihood_type";
+		return getStringProperty(key);
+	}
 }

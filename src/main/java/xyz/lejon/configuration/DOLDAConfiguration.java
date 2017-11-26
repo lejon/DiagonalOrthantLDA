@@ -205,4 +205,6 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	String getTestDatasetFilename();
 
 	boolean saveDocumentTopicDiagnostics();
+
+	String likelihoodType();
 }

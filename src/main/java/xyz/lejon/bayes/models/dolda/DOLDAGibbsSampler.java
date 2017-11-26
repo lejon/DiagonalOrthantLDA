@@ -56,7 +56,7 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 	boolean useIntecept = true;
 	
 	boolean saveBetaSamples = false;
-	boolean useUnsupervisedLL = true;
+	boolean useUnsupervisedLL = false;
 
 	protected PositiveTruncatedNormal ptn = new PositiveTruncatedNormal();
 	protected NegativeTruncatedNormal ntn = new NegativeTruncatedNormal();
@@ -82,6 +82,10 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 		saveBetaSamples = parentCfg.saveBetaSamples();
 		
 		noClasses = parentCfg.getLabelMap().keySet().size();
+		
+		if(parentCfg.likelihoodType()!=null) {
+			useUnsupervisedLL = parentCfg.likelihoodType().toLowerCase().startsWith("unsupervised");
+		}
 
 		averagerPool = new ForkJoinPool();
 
@@ -167,7 +171,7 @@ public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implement
 				probitSampling();
 				if (showTopicsInterval > 0 && iteration % showTopicsInterval == 0) {
 					System.out.println("Iteration " + iteration );		
-					double logLik = doProbitLikelihood();	
+					double logLik = modelLogLikelihood();	
 					String loggingPath = config.getLoggingUtil().getLogDir().getAbsolutePath();
 					LogState logState = new LogState(logLik, iteration, null, loggingPath, logger);
 					LDAUtils.logLikelihoodToFile(logState);
