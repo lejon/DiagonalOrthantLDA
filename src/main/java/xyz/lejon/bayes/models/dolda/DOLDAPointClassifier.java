@@ -414,8 +414,37 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 							dolda.getNoTopics(), 
 							dolda.getTypeTopicMatrix(), 
 							dolda.getAlphabet()));
-			topOut.println(topWords);
 			System.out.println("Top words are: \n" + topWords);
+			topWords = LDAUtils.formatTopWordsAsCsv(
+					LDAUtils.getTopWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(), 
+							dolda.getAlphabet()));
+			topOut.println(topWords);
+			
+			out = new PrintWriter(lgDir.getAbsolutePath() + "/fold-" + fold + "-RelevanceWords.txt");
+			topWords = LDAUtils.formatTopWords(
+					LDAUtils.getTopRelevanceWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(),  
+							config.getBeta(LDAConfiguration.BETA_DEFAULT),
+							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+							dolda.getAlphabet()));
+			System.out.println("Relevance words are: \n" + topWords);
+			topWords = LDAUtils.formatTopWordsAsCsv(
+					LDAUtils.getTopRelevanceWords(requestedWords, 
+							dolda.getAlphabet().size(), 
+							dolda.getNoTopics(), 
+							dolda.getTypeTopicMatrix(),  
+							config.getBeta(LDAConfiguration.BETA_DEFAULT),
+							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+							dolda.getAlphabet()));
+			out.println(topWords);
+			out.flush();
+			out.close();
+			
 		} else { 
 			topOut.println("No text data used");
 		}
