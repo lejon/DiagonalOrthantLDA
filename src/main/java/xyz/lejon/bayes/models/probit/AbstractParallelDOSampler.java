@@ -17,6 +17,7 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 	public void sample(int iterations) {	
 		iterationsToRun = iterations;
 		for (int iter = 0; iter < iterations; iter++) {
+			long startTime = System.currentTimeMillis();
 			preIteration(iter);
 			currentIteration = iter;
 
@@ -48,6 +49,9 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 				logBetas();
 			}
 			postIteration(iter);
+			
+			long elapsedTime = System.currentTimeMillis() - startTime;
+			
 			if (currentIteration % iterinter == 0) {
 				String llString = "";
 				if(logLoglikelihood) {
@@ -56,7 +60,7 @@ public abstract class AbstractParallelDOSampler extends AbstractDOSampler {
 					LogState logState = new LogState(logLik, currentIteration, null, loggingPath, null);
 					LDAUtils.logLikelihoodToFile(logState);					
 				}
-				System.out.println("Iter: " + iter + " " + llString);
+				System.out.println("Iter: " + iter + " " + llString + " (Elapsed time:" + (elapsedTime/1000.0) + "s / per iteration)");
 				if(printBeta) {
 					System.out.println("Betas: " + MatrixOps.doubleArrayToPrintString(betas));
 					System.out.println();
