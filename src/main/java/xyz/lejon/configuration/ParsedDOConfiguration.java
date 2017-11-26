@@ -204,10 +204,10 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			plotLabels = new String[df.length()];
 			List<Object> col = null;
 			if(label_col_name!=null){
-				System.out.println("Using labels from colum index: " + label_col_name);
+				System.out.println("Using labels from colum: " + label_col_name);
 				col = df.col(label_col_name);
 			} else {
-				System.out.println("Using labels from colum name: " + label_col_no);
+				System.out.println("Using labels from colum: " + label_col_no);
 				col = df.col(label_col_no);
 			}
 			for (Object lbl : col) {
@@ -692,8 +692,15 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 					names[cIdx++] = cNamesIterator.next().toString();
 				}
 			}
+			System.out.println("All names are: " + Arrays.toString(names));
 
 			trainingSet.setColnamesX(names);
+			
+			if(label_col_name!=null){
+				trainingSet.setColnameY(label_col_name);
+			} else {
+				trainingSet.setColnameY("Class");
+			}
 			trainingSet.setX(xs);
 			trainingSet.setPca(pca);
 		}

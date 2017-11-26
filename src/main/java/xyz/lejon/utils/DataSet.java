@@ -15,6 +15,7 @@ public class DataSet {
 	public Map<Integer, String> idToLabels = new HashMap<>();
 	DataFrame<Object> origData;
 	String [] colnamesX;
+	String colnameY;
 	PrincipalComponentAnalysis pca;
 	
 	public DataSet(DataFrame<Object> df, double [][] xs, int[] ys, String[] labels, Map<String, Integer> labelToId,
@@ -36,6 +37,14 @@ public class DataSet {
 
 	public void setColnamesX(String [] colnamesX) {
 		this.colnamesX = colnamesX;
+	}
+	
+	public String getColnameY() {
+		return colnameY;
+	}
+	
+	public void setColnameY(String colnameY) {
+		this.colnameY = colnameY;
 	}
 
 	public double[][] getX() {

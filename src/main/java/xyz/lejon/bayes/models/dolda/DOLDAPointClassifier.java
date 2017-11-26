@@ -335,14 +335,9 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 	void saveFoldData(int fold, EnhancedConfusionMatrix enhancedConfusionMatrix, DOLDA dolda) throws IOException {
 		String [] xColnames = fullDataset.getColnamesX();
 		if(xColnames==null) { xColnames = new String[0]; }
-		String [] allColnames = new String[xColnames.length+config.getNoSupervisedTopics(0)];
-		for (int i = 0; i < allColnames.length; i++) {
-			if(i<xColnames.length) {
-				allColnames[i] = xColnames[i];
-			} else {
-				allColnames[i] = i + "";
-			}
-		}
+		
+		String [] allColnames = ExperimentUtils.createColumnLabelsFromNames(xColnames, fullDataset.getColnameY(), config.getNoSupervisedTopics(0));
+		
 		File lgDir = config.getLoggingUtil().getLogDir();
 		
 		String foldPrefix = "fold-";

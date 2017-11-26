@@ -28,6 +28,10 @@ public class DOLDADataSet {
 	public String [] getColnamesX() {
 		return additionalCovariates.getColnamesX();
 	}
+
+	public String getColnameY() {
+		return additionalCovariates.getColnameY();
+	}
 	
 	public double[][] getX() {
 		return additionalCovariates.getX();

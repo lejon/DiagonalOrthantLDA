@@ -123,7 +123,7 @@ public class DOProbit {
 				
 				String[] colnamesX = trainingSetData.getColnamesX();
 				String [] columnLabels = new String[colnamesX.length+1];
-				columnLabels[0] = "Class";
+				columnLabels[0] = trainingSetData.getColnameY();
 				for (int j = 1; j < columnLabels.length; j++) {
 					columnLabels[j] = colnamesX[j-1];
 				}

@@ -56,9 +56,9 @@ public class ExperimentUtils {
 		out.writeCsv(lgDir.getAbsolutePath() + "/" + betasOutputFn);
 	}
 	
-	public static String[] createColumnLabels(int noXColumns, int noZColumns) {
+	public static String[] createColumnLabels(int noXColumns, String yColumnName, int noZColumns) {
 		String [] columnLabels = new String[noXColumns+noZColumns+1];
-		columnLabels[0] = "Class";
+		columnLabels[0] = yColumnName;
 		for (int lblIdx = 1; lblIdx < columnLabels.length; lblIdx++) {
 			// In the output name colums Xn for X covariates and Zn for supervised topics
 			// We have <= since we have added the "Class" column
@@ -71,9 +71,9 @@ public class ExperimentUtils {
 		return columnLabels;
 	}
 	
-	public static String[] createColumnLabelsFromXColumns(String [] xColumns, int noZColumns) {
+	public static String[] createColumnLabelsFromNames(String [] xColumns, String yColumnName, int noZColumns) {
 		String [] columnLabels = new String[xColumns.length+noZColumns+1];
-		columnLabels[0] = "Class";
+		columnLabels[0] = yColumnName;
 		for (int lblIdx = 1; lblIdx < columnLabels.length; lblIdx++) {
 			// In the output name colums Xn for X covariates and Zn for supervised topics
 			// We have <= since we have added the "Class" column
