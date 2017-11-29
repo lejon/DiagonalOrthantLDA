@@ -376,26 +376,26 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 			ExperimentUtils.saveDocTopicMeans(lgDir, sampledSupervisedTestTopics, foldPrefix + fold + "-TESTSET-" + dtFn);
 		}
 		
-		PrintWriter idsOut = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/test-ids-fold-" + fold + ".txt");
+		PrintWriter idsOut = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/fold-" + fold + "-test-ids.txt");
 		for (String id : testRowIds) {				
 			idsOut.println(id);
 		}
 		idsOut.flush();
 		idsOut.close();
 		
-		PrintWriter trainIdsOut = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/train-ids-fold-" + fold + ".txt");
+		PrintWriter trainIdsOut = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/fold-" + fold + "-train-ids.txt");
 		for (String id : trainRowIds) {				
 			trainIdsOut.println(id);
 		}
 		trainIdsOut.flush();
 		trainIdsOut.close();
 
-		PrintWriter out = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/confusion-matrix-fold-" + fold + ".txt");
+		PrintWriter out = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/fold-" + fold + "-confusion-matrix.txt");
 		out.println(enhancedConfusionMatrix);
 		out.flush();
 		out.close();
 		
-		PrintWriter pw = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/confusion-matrix-fold-" + fold + ".csv");
+		PrintWriter pw = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/fold-" + fold + "confusion-matrix-fold.csv");
 		pw.println(enhancedConfusionMatrix.toCsv(","));
 		pw.flush();
 		pw.close();
@@ -414,6 +414,10 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 							dolda.getTypeTopicMatrix(), 
 							dolda.getAlphabet()));
 			System.out.println("Top words are: \n" + topWords);
+			topOut.println(topWords);
+			topOut.flush();
+			topOut.close();
+			topOut = new PrintWriter(lgDir.getAbsolutePath() + "/fold-" + fold + "-TopWords.csv");
 			topWords = LDAUtils.formatTopWordsAsCsv(
 					LDAUtils.getTopWords(requestedWords, 
 							dolda.getAlphabet().size(), 
@@ -432,6 +436,10 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
 							dolda.getAlphabet()));
 			System.out.println("Relevance words are: \n" + topWords);
+			out.println(topWords);
+			out.flush();
+			out.close();
+			out = new PrintWriter(lgDir.getAbsolutePath() + "/fold-" + fold + "-RelevanceWords.csv");
 			topWords = LDAUtils.formatTopWordsAsCsv(
 					LDAUtils.getTopRelevanceWords(requestedWords, 
 							dolda.getAlphabet().size(), 
@@ -443,7 +451,6 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 			out.println(topWords);
 			out.flush();
 			out.close();
-			
 		} else { 
 			topOut.println("No text data used");
 		}

@@ -135,7 +135,7 @@ public class DOLDASamplingClassifier extends DOLDAPointClassifier implements DOL
 			System.out.println("Trial confusion matrix: \n"  + enhancedConfusionMatrix);
 			
 			if(instanceToPredictiveDistribution!=null && instanceToPredictiveDistribution.size() > 0) {
-				PrintWriter out = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/predictive-distribution-fold-" + fold + ".csv");
+				PrintWriter out = new PrintWriter(config.getLoggingUtil().getLogDir().getAbsolutePath() + "/fold-" + fold + "-predictive-distribution.csv");
 				out.println(predictiveDistributionToCsvHeaders());
 				out.println(predictiveDistributionToCsv());
 				out.flush();
