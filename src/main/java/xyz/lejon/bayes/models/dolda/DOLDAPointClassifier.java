@@ -88,8 +88,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 	}
 	
 	// TODO: This code should be improved to handle instances from both train, test and validation
-	// sets. It is also inefficient in concatenation the WHOLE textXs and sampledSupervisedTestTopics
-	// when we only need one row!
+	// sets. 
 	/* (non-Javadoc)
 	 * @see xyz.lejon.bayes.models.dolda.DOLDAClassifier#classify(cc.mallet.types.Instance)
 	 */
@@ -99,14 +98,14 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 
 		int row = findXrow(instanceId, testRowIds);
 
-		double [][] xs = MatrixOps.concatenate(testXs,sampledSupervisedTestTopics);
+		double [] xsrow = MatrixOps.concatenate(testXs[row],sampledSupervisedTestTopics[row]);
 		int [] ys = testYs;
 
 		int predClass;
 		int realClass;
 
-		double [][] xrow = new double[1][xs[row].length];
-		xrow[0] = xs[row];
+		double [][] xrow = new double[1][xsrow.length];
+		xrow[0] = xsrow;
 
 		double[] scores = calcClassScores(xrow, betas);
 		int maxIdx = MatrixOps.maxIdx(scores);
