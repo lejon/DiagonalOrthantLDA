@@ -104,12 +104,9 @@ public class FastMVNSamplerCholesky {
 		}
 
 		CommonOps.mult(samplingMatrix, normals, newMean);
-
-		for (int i = 0; i < dim; i++) {
-			CommonOps.add(mean, newMean, result);
-		}
-
+		CommonOps.add(mean, newMean, result);
 		CommonOps.transpose(result);
+		
 		double[] ds = MatrixOps.extractDoubleArray(result)[0];
 		return ds;
 	}
