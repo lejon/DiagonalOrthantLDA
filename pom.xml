@@ -112,7 +112,7 @@
 				<configuration>
 					<forkCount>3</forkCount>
 					<reuseForks>true</reuseForks>
-					<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+					<argLine>-Xmx1024m -XX:MaxPermSize=256m -Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jARPACK</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
