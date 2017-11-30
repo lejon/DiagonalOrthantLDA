@@ -4,6 +4,7 @@ package xyz.lejon.runnables;
 // If this is done, you can use the DOLDAGibbsJBlasHorseshoePar to parallelize the Beta sampling (per class)
 // On the mozilla-25000 dataset, this reduced the sampling of 10 iterations from 7 to 4 minutes!
 // java -Xmx8g -Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jARPACK -cp DOLDA-0.6.2.jar xyz.lejon.runnables.DOLDAClassification --normalize --run_cfg=DOLDAConfigs/DOLDAClassification.cfg
+// Add the following JVM arguments to get rid of sampling printouts: -Djava.util.logging.config.file=src/main/resources/logging.properties
 
 import java.io.File;
 import java.io.PrintWriter;
