@@ -11,6 +11,7 @@
 	<!-- v1.7.3: Print loglikelihood when we have only X covariates -->
 	<!-- v1.7.4: Bugfix -->
 	<!-- v1.7.5: Bugfix -->
+	<!-- v1.7.6: Performance improvements and cleanups -->
 	<version>1.7.5</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
