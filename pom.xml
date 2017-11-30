@@ -12,7 +12,7 @@
 	<!-- v1.7.4: Bugfix -->
 	<!-- v1.7.5: Bugfix -->
 	<!-- v1.7.6: Performance improvements and cleanups -->
-	<version>1.7.5</version>
+	<version>1.7.6</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
