@@ -477,8 +477,8 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 			id_col_no = getInt("id_column_no", -1) - 1; // Id col is 1-indexed
 		}
 		if (parsedCommandLine.hasOption( "id_column_no" )) {
-			label_col_no = Integer.parseInt(parsedCommandLine.getOptionValue("id_column_no").trim());
-			label_col_no--; // Label col is 1 indexed
+			id_col_no = Integer.parseInt(parsedCommandLine.getOptionValue("id_column_no").trim());
+			id_col_no--; // Id col is 1 indexed
 		}
 		if(getStringProperty("id_column_name")!=null) {
 			id_col_name = getStringProperty("id_column_name");
