@@ -30,7 +30,9 @@ import xyz.lejon.utils.MatrixOps;
 import xyz.lejon.utils.Timer;
 import cc.mallet.configuration.LDAConfiguration;
 import cc.mallet.util.LDAUtils;
+import cc.mallet.topics.LDAGibbsSampler;
 import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
+import cc.mallet.topics.TopicModelDiagnosticsPlain;
 import cc.mallet.types.InstanceList;
 
 public class SLDA {
@@ -278,20 +280,38 @@ public class SLDA {
 				}
 				
 				
-					if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
-						String docTopicMeanFn = config.getPhiMeansOutputFilename();
-						double [][] means = dolda.getPhiMeans();
-						if(means!=null) {
+				if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
+					String docTopicMeanFn = config.getPhiMeansOutputFilename();
+					double [][] means = dolda.getPhiMeans();
+					if(means!=null) {
 						LDAUtils.writeASCIIDoubleMatrix(means, lgDir.getAbsolutePath() + "/" + docTopicMeanFn, ",");
-						} else {
-							System.err.println("WARNING: ParallelLDA: No Phi means where sampled, not saving Phi means! This is likely due to a combination of configuration settings of phi_mean_burnin, phi_mean_thin and save_phi_mean");
-						}
-						// No big point in saving Phi without the vocabulary
-						String vocabFn = config.getVocabularyFilename();
-						if(vocabFn==null || vocabFn.length()==0) { vocabFn = "phi_vocabulary.txt"; }
-						String [] vobaculary = LDAUtils.extractVocabulaty(textData.getDataAlphabet());
-						LDAUtils.writeStringArray(vobaculary,lgDir.getAbsolutePath() + "/" + vocabFn);
+					} else {
+						System.err.println("WARNING: ParallelLDA: No Phi means where sampled, not saving Phi means! This is likely due to a combination of configuration settings of phi_mean_burnin, phi_mean_thin and save_phi_mean");
 					}
+					// No big point in saving Phi without the vocabulary
+					String vocabFn = config.getVocabularyFilename();
+					if(vocabFn==null || vocabFn.length()==0) { vocabFn = "phi_vocabulary.txt"; }
+					String [] vobaculary = LDAUtils.extractVocabulaty(textData.getDataAlphabet());
+					LDAUtils.writeStringArray(vobaculary,lgDir.getAbsolutePath() + "/" + vocabFn);
+				}
+				
+				// Save document topic diagnostics
+				if(config.saveDocumentTopicDiagnostics()) {
+					if(dolda instanceof LDAGibbsSampler) {			
+						LDAGibbsSampler model = (LDAGibbsSampler) dolda;
+						int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
+						TopicModelDiagnosticsPlain tmd = new TopicModelDiagnosticsPlain(model, requestedWords);
+						System.out.println("Topic model diagnostics:");
+						System.out.println(tmd.toString());			
+						String docTopicDiagFn = config.getDocumentTopicDiagnosticsOutputFilename();
+						PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/" + docTopicDiagFn);
+						out.println(tmd.topicsToCsv());
+						out.flush();
+						out.close();
+					} else {
+						throw new RuntimeException("Sampler is not an instance of an LDAGibbsSampler, cannot exctract statistics");
+					}
+				}
 
 				if(config.saveVocabulary(false)) {
 					String vocabFn = config.getVocabularyFilename();
@@ -309,7 +329,6 @@ public class SLDA {
 					String docLensFn = config.getDocLengthsFilename();
 					int [] freqs = LDAUtils.extractDocLength(textData);
 					LDAUtils.writeIntArray(freqs, lgDir.getAbsolutePath() + "/" + docLensFn);
-					
 				}
 				
 				/*
@@ -331,62 +350,63 @@ public class SLDA {
 				lu.dynamicLogRun("Runs", t, cp, (Configuration) config, null, 
 						SLDA.class.getName(), "-results", "HEADING", "DOLDA", numberOfRuns, metadata);
 				
+				boolean fakeTextData = trainingSetData.hasFakeTextData();
 				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
-				PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.txt");
-				if(textData!=null) {
-					String topWords = LDAUtils.formatTopWords(LDAUtils.getTopWords(requestedWords, 
-							dolda.getAlphabet().size(), 
-							dolda.getNoTopics(), 
-							dolda.getTypeTopicMatrix(), 
-							dolda.getAlphabet()));
+				if(!fakeTextData && requestedWords>dolda.getAlphabet().size()) {
+					requestedWords = dolda.getAlphabet().size();
+				}
+
+				PrintWriter topOut = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.txt");
+				if(!fakeTextData) {
+					String topWords = LDAUtils.formatTopWords(
+							LDAUtils.getTopWords(requestedWords, 
+									dolda.getAlphabet().size(), 
+									dolda.getNoTopics(), 
+									dolda.getTypeTopicMatrix(), 
+									dolda.getAlphabet()));
 					System.out.println("Top words are: \n" + topWords);
+					topOut.println(topWords);
+					topOut.flush();
+					topOut.close();
+					topOut = new PrintWriter(lgDir.getAbsolutePath() + "/TopWords.csv");
+					topWords = LDAUtils.formatTopWordsAsCsv(
+							LDAUtils.getTopWords(requestedWords, 
+									dolda.getAlphabet().size(), 
+									dolda.getNoTopics(), 
+									dolda.getTypeTopicMatrix(), 
+									dolda.getAlphabet()));
+					topOut.println(topWords);
 					
-					topWords = LDAUtils.formatTopWordsAsCsv(LDAUtils.getTopWords(requestedWords, 
-							dolda.getAlphabet().size(), 
-							dolda.getNoTopics(), 
-							dolda.getTypeTopicMatrix(), 
-							dolda.getAlphabet()));
+					PrintWriter out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.txt");
+					topWords = LDAUtils.formatTopWords(
+							LDAUtils.getTopRelevanceWords(requestedWords, 
+									dolda.getAlphabet().size(), 
+									dolda.getNoTopics(), 
+									dolda.getTypeTopicMatrix(),  
+									config.getBeta(LDAConfiguration.BETA_DEFAULT),
+									config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+									dolda.getAlphabet()));
+					System.out.println("Relevance words are: \n" + topWords);
 					out.println(topWords);
 					out.flush();
 					out.close();
-
-					out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.xt");
-					
-					topWords = LDAUtils.formatTopWords(LDAUtils.getTopRelevanceWords(requestedWords, 
-							dolda.getAlphabet().size(), 
-							dolda.getNoTopics(), 
-							dolda.getTypeTopicMatrix(), 
-							config.getBeta(LDAConfiguration.BETA_DEFAULT),
-							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
-							dolda.getAlphabet()));
-					System.out.println("Relevance words are: \n" + topWords);
-					
-					topWords = LDAUtils.formatTopWordsAsCsv(LDAUtils.getTopRelevanceWords(requestedWords, 
-							dolda.getAlphabet().size(), 
-							dolda.getNoTopics(), 
-							dolda.getTypeTopicMatrix(), 
-							config.getBeta(LDAConfiguration.BETA_DEFAULT),
-							config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
-							dolda.getAlphabet()));
+					out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.csv");
+					topWords = LDAUtils.formatTopWordsAsCsv(
+							LDAUtils.getTopRelevanceWords(requestedWords, 
+									dolda.getAlphabet().size(), 
+									dolda.getNoTopics(), 
+									dolda.getTypeTopicMatrix(),  
+									config.getBeta(LDAConfiguration.BETA_DEFAULT),
+									config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
+									dolda.getAlphabet()));
 					out.println(topWords);
+					out.flush();
+					out.close();
 				} else { 
-					out.println("No text data used");
+					topOut.println("No text data used");
 				}
-				out.flush();
-				out.close();
-				
-				out = new PrintWriter(lgDir.getAbsolutePath() + "/RelevanceWords.txt");
-				out.println(LDAUtils.formatTopWordsAsCsv(
-						LDAUtils.getTopRelevanceWords(requestedWords, 
-								dolda.getAlphabet().size(), 
-								dolda.getNoTopics(), 
-								dolda.getTypeTopicMatrix(), 
-								config.getBeta(LDAConfiguration.BETA_DEFAULT),
-								config.getLambda(LDAConfiguration.LAMBDA_DEFAULT), 
-								dolda.getAlphabet())));
-				out.flush();
-				out.close();
-
+				topOut.flush();
+				topOut.close();
 
 				System.out.println("I am done!");
 			}
