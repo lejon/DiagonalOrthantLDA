@@ -13,7 +13,8 @@
 	<!-- v1.7.5: Bugfix -->
 	<!-- v1.7.6: Performance improvements and cleanups -->
 	<!-- v1.7.7: Fixed bug with id column selection -->
-	<version>1.7.7</version>
+	<!-- v1.7.8: Added document topic diagnostics to SLDA -->
+	<version>1.7.8</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
