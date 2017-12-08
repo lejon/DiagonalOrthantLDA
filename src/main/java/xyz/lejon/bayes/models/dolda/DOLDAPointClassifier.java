@@ -359,6 +359,21 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 			}
 		}
 		
+		if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
+			String phiMeanFn = config.getPhiMeansOutputFilename();
+			double [][] means = dolda.getPhiMeans();
+			if(means!=null) {
+				LDAUtils.writeASCIIDoubleMatrix(means, lgDir.getAbsolutePath() + "/" + foldPrefix + fold + "-" + phiMeanFn, ",");
+			} else {
+				System.err.println("WARNING: ParallelLDA: No Phi means where sampled, not saving Phi means! This is likely due to a combination of configuration settings of phi_mean_burnin, phi_mean_thin and save_phi_mean");
+			}
+			// No big point in saving Phi without the vocabulary
+			String vocabFn = config.getVocabularyFilename();
+			if(vocabFn==null || vocabFn.length()==0) { vocabFn = "phi_vocabulary.txt"; }
+			String [] vobaculary = LDAUtils.extractVocabulaty(dolda.getAlphabet());
+			LDAUtils.writeStringArray(vobaculary,lgDir.getAbsolutePath() + "/" + foldPrefix + fold + "-" + vocabFn);
+		}
+		
 		// Save example betas
 		if(config.getSaveBetas()) {
 			ExperimentUtils.saveBetas(lgDir, allColnames, trainXs[0].length, dolda.getBetas(), config.getIdMap(), foldPrefix + fold + "-" + config.betasOutputFn());

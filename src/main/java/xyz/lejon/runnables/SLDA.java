@@ -281,10 +281,10 @@ public class SLDA {
 				
 				
 				if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
-					String docTopicMeanFn = config.getPhiMeansOutputFilename();
+					String phiMeanFn = config.getPhiMeansOutputFilename();
 					double [][] means = dolda.getPhiMeans();
 					if(means!=null) {
-						LDAUtils.writeASCIIDoubleMatrix(means, lgDir.getAbsolutePath() + "/" + docTopicMeanFn, ",");
+						LDAUtils.writeASCIIDoubleMatrix(means, lgDir.getAbsolutePath() + "/" + phiMeanFn, ",");
 					} else {
 						System.err.println("WARNING: ParallelLDA: No Phi means where sampled, not saving Phi means! This is likely due to a combination of configuration settings of phi_mean_burnin, phi_mean_thin and save_phi_mean");
 					}
