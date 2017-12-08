@@ -12,7 +12,8 @@
 	<!-- v1.7.4: Bugfix -->
 	<!-- v1.7.5: Bugfix -->
 	<!-- v1.7.6: Performance improvements and cleanups -->
-	<version>1.7.6</version>
+	<!-- v1.7.7: Fixed bug with id column selection -->
+	<version>1.7.7</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
