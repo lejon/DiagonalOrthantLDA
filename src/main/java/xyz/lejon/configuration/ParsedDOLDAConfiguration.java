@@ -323,7 +323,7 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			// If we did not have any additional covariates use the labels from the LDA dataset
 			if(testDataSet==null) {
 				int [] ys = new int[ldaLabels.size()];
-				String [] plotLabels = null;
+				String [] plotLabels = new String[ldaLabels.size()];;
 				Map<String,Integer> labelToId = new HashMap<>();
 				Map<Integer, String> idToLabels = new HashMap<>();
 
@@ -335,6 +335,7 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 						labelToId.put(lbl.toString(),lblcnt);
 						idToLabels.put(lblcnt++,lbl.toString());
 					}
+					plotLabels[i] = lbl.toString();
 					ys[idx++] = labelToId.get(lbl.toString());
 				}
 				double [][] xs = new double[ldaLabels.size()][0];
@@ -427,7 +428,7 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			List<String> ldaIds = DOLDAConfigUtils.extractLDAIds(trainingInstances);
 
 			int [] ys = new int[ldaLabels.size()];
-			String [] plotLabels = null;
+			String [] plotLabels = new String[ldaLabels.size()];
 			Map<String,Integer> labelToId = new HashMap<>();
 			Map<Integer, String> idToLabels = new HashMap<>();
 			
@@ -439,6 +440,7 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 					labelToId.put(lbl.toString(),lblcnt);
 					idToLabels.put(lblcnt++,lbl.toString());
 				}
+				plotLabels[i] = lbl.toString();
 				ys[idx++] = labelToId.get(lbl.toString());
 			}
 			double [][] xs = new double[ldaLabels.size()][0];
