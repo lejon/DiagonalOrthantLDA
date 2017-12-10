@@ -499,6 +499,12 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 		if (parsedCommandLine.hasOption( "label_column_name" )) {
 			label_col_name = parsedCommandLine.getOptionValue( "label_column_name" );
 		}
+		Boolean  hl = getBooleanPropertyOrNull("no_labels");
+		if (hl==null) {
+			hasLabels = true;
+		} else {
+			hasLabels = !hl;
+		}
 		if (parsedCommandLine.hasOption( "no_labels" )) {
 			hasLabels = false;
 		}
