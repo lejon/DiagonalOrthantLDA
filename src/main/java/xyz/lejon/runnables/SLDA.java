@@ -5,14 +5,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import joinery.DataFrame;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.configuration.ConfigurationException;
 
+import cc.mallet.configuration.LDAConfiguration;
+import cc.mallet.topics.LDAGibbsSampler;
+import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
+import cc.mallet.topics.TopicModelDiagnosticsPlain;
+import cc.mallet.types.InstanceList;
+import cc.mallet.util.LDAUtils;
+import joinery.DataFrame;
 import xyz.lejon.bayes.models.dolda.DOLDA;
 import xyz.lejon.bayes.models.dolda.DOLDADataSet;
 import xyz.lejon.bayes.models.dolda.DOLDAEvaluation;
@@ -28,12 +36,6 @@ import xyz.lejon.utils.EclipseDetector;
 import xyz.lejon.utils.LoggingUtils;
 import xyz.lejon.utils.MatrixOps;
 import xyz.lejon.utils.Timer;
-import cc.mallet.configuration.LDAConfiguration;
-import cc.mallet.util.LDAUtils;
-import cc.mallet.topics.LDAGibbsSampler;
-import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
-import cc.mallet.topics.TopicModelDiagnosticsPlain;
-import cc.mallet.types.InstanceList;
 
 public class SLDA {
 	static DOLDA dolda;
@@ -154,7 +156,21 @@ public class SLDA {
 
 				DOLDADataSet trainingSetData =config.loadCombinedTrainingSet();
 				DOLDADataSet testSetData = config.loadCombinedTestSet();
-
+				
+				// If we have a test dataset, ensure that it is aligned (i.e has a subset of the trainingset labels)
+				if(!(testSetData==null || testSetData.isEmpty()) && !DOLDADataSet.ensureAligned(trainingSetData,testSetData)) {
+					String [] trainingLabels = trainingSetData.getLabels();
+					Set<String> trainLblSet = new TreeSet<>(Arrays.asList(trainingLabels));
+					
+					String [] testLabels = testSetData.getLabels();
+					Set<String> testLblSet = new TreeSet<>(Arrays.asList(testLabels));	
+					
+					testLblSet.removeAll(trainLblSet);
+					
+					throw new IllegalStateException("Test set and training sets are not aligned, cannot continue! Ensure that the names and number of class labels are the same in both. \nTraining: " 
+							+ trainLblSet + "\nIn Test but not train: " + testLblSet);
+				}
+				
 				double [][] xs = trainingSetData.getX();
 				int [] ys = trainingSetData.getY();
 				Map<Integer,String> idMap = config.getIdMap();
@@ -348,7 +364,7 @@ public class SLDA {
 				metadata.add("ConfusionMatrix: " + "\n" + DOLDAEvaluation.confusionMatrixToString(result.confusionMatrix,idMap));
 				// Save stats for this run
 				lu.dynamicLogRun("Runs", t, cp, (Configuration) config, null, 
-						SLDA.class.getName(), "-results", "HEADING", "DOLDA", numberOfRuns, metadata);
+						SLDA.class.getName(), conf+"-results", "HEADING", "DOLDA", numberOfRuns, metadata);
 				
 				boolean fakeTextData = trainingSetData.hasFakeTextData();
 				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
