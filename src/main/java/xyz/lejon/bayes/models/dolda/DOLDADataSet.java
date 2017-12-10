@@ -1,11 +1,14 @@
 package xyz.lejon.bayes.models.dolda;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import cc.mallet.types.InstanceList;
 import joinery.DataFrame;
 import xyz.lejon.utils.DataSet;
 import xyz.lejon.utils.PrincipalComponentAnalysis;
-import cc.mallet.types.InstanceList;
 
 
 public class DOLDADataSet {
@@ -139,5 +142,13 @@ public class DOLDADataSet {
 
 	public boolean hasFakeTextData() {
 		return fakeTextData;
+	}
+	
+	// Ensure that the labels in the test set is a subset of the training set 
+	public static boolean ensureAligned(DOLDADataSet trainingSetData, DOLDADataSet testSetData) {
+		Set<String> trainLblSet = new HashSet<>(Arrays.asList(trainingSetData.getLabels()));
+		Set<String> testLblSet = new HashSet<>(Arrays.asList(testSetData.getLabels()));
+		
+		return trainLblSet.containsAll(testLblSet);
 	}
 }
