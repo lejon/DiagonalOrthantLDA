@@ -446,6 +446,9 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			ldaIds.toArray(ids);
 			
 			trainingSet = new DataSet(null, xs, ys, plotLabels, labelToId, idToLabels, null, ids);
+			if(addIntercept) {
+				trainingSet.setColnamesX(new String[] {"Intercept"});
+			}
 		}
 		
 		// Ensure that the ordering of classlabels from our loading of data
