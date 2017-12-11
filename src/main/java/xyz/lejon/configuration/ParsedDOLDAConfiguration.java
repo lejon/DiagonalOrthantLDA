@@ -370,7 +370,7 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 	}
 
 	@Override
-	public DOLDADataSet loadCombinedTrainingSet() throws IOException {
+	public DOLDADataSet loadCombinedTrainingSet() throws IOException, ConfigurationException {
 		// Check if we have additional covariates and if so load them 
 		String csvFilename = null;
 		if(parsedCommandLine.getArgs().length>0) {
@@ -394,7 +394,6 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 			// Even if we don't have extra covariates we have to check if we should use intercept...
 			if(configHasProperty("intercept")) {
 				addIntercept = getBooleanProperty("intercept");	
-				if(addIntercept) System.out.println("Using intercept...");
 			}
 			//Command line overrides config...
 			if (parsedCommandLine.hasOption( "intercept" )) {
@@ -402,15 +401,13 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 				if(icept!=0 && icept!=1 ) 
 					throw new IllegalArgumentException("Intercept must be 0 (false) or 1 (true),  " + icept + " is not a legal value");
 				addIntercept = icept == 1;
-				if(addIntercept) System.out.println("Using intercept...");
 			}
 		}
+		if(addIntercept) System.out.println("Using intercept...");
 		
-		String stoplistFn = getStoplistFilename("stoplist.txt");
 		boolean fakeTextData = false;
 		if(haveFilename(textdataset_fn)) {
-			trainingInstances = LDAUtils.loadInstancesPrune(textdataset_fn, 
-					stoplistFn, getRareThreshold(DOLDAConfiguration.RARE_WORD_THRESHOLD),keepNumbers());
+			trainingInstances = LDAUtils.loadDataset(new DOLDAPlainLDAConfiguration(this), textdataset_fn);
 		} else {
 			// Create an empty text dataset 
 			trainingInstances = createEmptyTrainingset(trainingDataSet.getLabels(),trainingDataSet.getIds());
