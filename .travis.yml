@@ -2,3 +2,19 @@
 # See: https://docs.travis-ci.com/user/languages/java
 
 language: java
+
+before_install:
+  - nativepath=/home/$USER/native/Linux-amd64-64
+  - sudo mkdir -p $nativepath
+  -
+  - jblas=libjblas.tar.gz
+  -
+  - # Download native Java bindings for jblas
+  - wget -S -T 10 -t 5 http://reddconfig.s3.amazonaws.com/$jblas
+  -
+  - # Untar everything into native library path
+  - sudo tar -C $nativepath --strip-components=1 -xvzf $jblas
+  - sudo chown --recursive $USER $nativepath
+  -
+  - export JAVA_LIBRARY_PATH=$nativepath:$JAVA_LIBRARY_PATH
+  
