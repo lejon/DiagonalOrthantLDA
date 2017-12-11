@@ -13,16 +13,16 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 	protected String MATRIX_TYPE = "Confusion Matrix";
 	protected int numClasses;
 	// Since it is package private in parent...
-	protected Trial myTrial;
 	protected int [][] myValues;
 	protected int numCorrect = 0;
 	protected int total = 0;
 	protected double averageAccuracy = 0.0;
+	LabelAlphabet labelAlphabet = null;
 	
 	public EnhancedConfusionMatrix(Trial t) {
 		super(t);
 		
-		this.myTrial = t;
+		labelAlphabet = t.getClassifier().getLabelAlphabet();
 		Labeling tempLabeling =
 			((Classification)t.get(0)).getLabeling();
 		this.numClasses = tempLabeling.getLabelAlphabet().size();
@@ -54,7 +54,6 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		MATRIX_TYPE = "Combined Confusion Matrix";
 		
 		Trial ttmp = ts[0];
-		this.myTrial = ttmp;
 		Labeling tempLabeling =
 				((Classification)ttmp.get(0)).getLabeling();
 		this.numClasses = tempLabeling.getLabelAlphabet().size();
@@ -78,11 +77,20 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		}
 		averageAccuracy = (double) numCorrect / total;
 	}
-	
+		
 	public String toCsv(String sep) {
+		return enhancedConfusionMatrixToCsv(sep, labelAlphabet, myValues);
+	}
+	
+	@Override
+	public String toString() {
+		return enhancedConfMatrixToString(numClasses, labelAlphabet, MATRIX_TYPE, myValues);
+	}
+	
+	public static String enhancedConfusionMatrixToCsv(String sep, LabelAlphabet labelAlphabet, int [][] myValues) {
+		int numClasses = myValues.length;
 		StringBuffer sb = new StringBuffer ();
 		int maxLabelNameLength = 0;
-		LabelAlphabet labelAlphabet = myTrial.getClassifier().getLabelAlphabet();
 		for (int i = 0; i < numClasses; i++) {
 			int len = labelAlphabet.lookupLabel(i).toString().length();
 			if (maxLabelNameLength < len)
@@ -111,11 +119,21 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		return sb.toString(); 
 	}
 	
-	@Override
-	public String toString() {
+	public static String enhancedConfMatrixToString(int numClasses, LabelAlphabet labelAlphabet, String MATRIX_TYPE, 
+			int [][] myValues) {
+		int numCorrect = 0;
+		int total = 0;
+		for (int i = 0; i < myValues.length; i++) {
+			for (int j = 0; j < myValues.length; i++) {
+				if(i==j) {
+					numCorrect += myValues[i][j];
+				}
+				total += myValues[i][j];
+			}
+		}
+		double averageAccuracy = ((double) numCorrect) / (double) total;
 		StringBuffer sb = new StringBuffer ();
 		int maxLabelNameLength = 0;
-		LabelAlphabet labelAlphabet = myTrial.getClassifier().getLabelAlphabet();
 		for (int i = 0; i < numClasses; i++) {
 			int len = labelAlphabet.lookupLabel(i).toString().length();
 			if (maxLabelNameLength < len)

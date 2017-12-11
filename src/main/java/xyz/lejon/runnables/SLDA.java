@@ -20,6 +20,7 @@ import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
 import cc.mallet.topics.TopicModelDiagnosticsPlain;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.LabelAlphabet;
 import cc.mallet.util.LDAUtils;
 import joinery.DataFrame;
 import xyz.lejon.bayes.models.dolda.DOLDA;
@@ -34,6 +35,7 @@ import xyz.lejon.configuration.DOLDAPlainLDAConfiguration;
 import xyz.lejon.configuration.ParsedDOLDAConfiguration;
 import xyz.lejon.eval.EvalResult;
 import xyz.lejon.utils.EclipseDetector;
+import xyz.lejon.utils.EnhancedConfusionMatrix;
 import xyz.lejon.utils.LoggingUtils;
 import xyz.lejon.utils.MatrixOps;
 import xyz.lejon.utils.Timer;
@@ -270,6 +272,14 @@ public class SLDA {
 				System.out.println();
 				System.out.println("Total correct: " + result.noCorrect + " / " + ((double)testset.length) +  " => " + String.format("%.0f",pCorrect) + "% correct");
 				System.out.println(PROGRAM_NAME + " took: " + (t.getEllapsedTime() / 1000) + " seconds");
+				
+				boolean saveConfusionMatrixAsCsv = true;
+				if(saveConfusionMatrixAsCsv && textData!=null) {
+					PrintWriter pw = new PrintWriter(lgDir.getAbsolutePath() + "/confusion-matrix.csv");
+					pw.println(EnhancedConfusionMatrix.enhancedConfusionMatrixToCsv(",", (LabelAlphabet) textData.getPipe().getTargetAlphabet(), result.confusionMatrix));
+					pw.flush();
+					pw.close();
+				}
 				
 				String [] xColnames = trainingSetData.getColnamesX();
 				if(xColnames==null) { xColnames = new String[0]; }
