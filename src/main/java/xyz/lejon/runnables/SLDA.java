@@ -232,7 +232,7 @@ public class SLDA {
 							// Save the  doc-topics-means of the testset too 
 							String testDocTopicMeansOutFullFn = config.getDocumentTopicMeansOutputFilename();
 							File fn = new File(testDocTopicMeansOutFullFn);
-							String testDocTopicMeansOutFn = fn.getPath() + "/TESTSET-" + fn.getName();
+							String testDocTopicMeansOutFn = "TESTSET-" + fn.getName();
 							ExperimentUtils.saveDocTopicMeans(lgDir, testZ, testDocTopicMeansOutFn);
 						}
 					} else {
