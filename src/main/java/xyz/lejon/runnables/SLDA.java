@@ -512,16 +512,14 @@ public class SLDA {
 		// Imports the data into the model
 		model.addInstances(instances);
 
-		System.out.println("Starting sampling the test data (" + config.getNoIterations(LDAConfiguration.NO_ITER_DEFAULT) + "iterations).");
+		System.out.println("Starting sampling the test data (" + config.getNoIterations(LDAConfiguration.NO_ITER_DEFAULT) + " iterations).");
 		System.out.println("_____________________________\n");
 
 		// Runs the model
 		model.setPhi(MatrixOps.clone(phi), instances.getAlphabet(), instances.getTargetAlphabet());
 		model.sampleZGivenPhi(config.getNoIterations(LDAConfiguration.NO_ITER_DEFAULT));
 		
-		System.out.println(
-				String.format("SpaliasUncollapsed Parallell LDA (%d batches).", 
-						config.getNoBatches(LDAConfiguration.NO_BATCHES_DEFAULT)));
+		System.out.println("Test sampling finished.");
 		
 		return MatrixOps.extractCols(0,config.getNoSupervisedTopics(-1), model.getZbar());
 	}
