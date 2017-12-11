@@ -278,8 +278,10 @@ public class SLDA {
 					noSupervisedTopics = 0;
 				}
 				
+				String yColName = trainingSetData.getColnameY() != null ? trainingSetData.getColnameY() : "Class";
+				
 				//String [] allColnames = new String[xColnames.length+noSupervisedTopics];
-				String [] allColnames = ExperimentUtils.createColumnLabelsFromNames(xColnames, trainingSetData.getColnameY(), noSupervisedTopics);
+				String [] allColnames = ExperimentUtils.createColumnLabelsFromNames(xColnames, yColName, noSupervisedTopics);
 				
 				// Save last betas
 				if(config.getSaveBetas()) {
