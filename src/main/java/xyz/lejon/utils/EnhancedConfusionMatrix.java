@@ -13,16 +13,16 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 	protected String MATRIX_TYPE = "Confusion Matrix";
 	protected int numClasses;
 	// Since it is package private in parent...
+	protected Trial myTrial;
 	protected int [][] myValues;
 	protected int numCorrect = 0;
 	protected int total = 0;
 	protected double averageAccuracy = 0.0;
-	LabelAlphabet labelAlphabet = null;
 	
 	public EnhancedConfusionMatrix(Trial t) {
 		super(t);
 		
-		labelAlphabet = t.getClassifier().getLabelAlphabet();
+		this.myTrial = t;
 		Labeling tempLabeling =
 			((Classification)t.get(0)).getLabeling();
 		this.numClasses = tempLabeling.getLabelAlphabet().size();
@@ -54,6 +54,7 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		MATRIX_TYPE = "Combined Confusion Matrix";
 		
 		Trial ttmp = ts[0];
+		this.myTrial = ttmp;
 		Labeling tempLabeling =
 				((Classification)ttmp.get(0)).getLabeling();
 		this.numClasses = tempLabeling.getLabelAlphabet().size();
@@ -77,20 +78,11 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		}
 		averageAccuracy = (double) numCorrect / total;
 	}
-		
+	
 	public String toCsv(String sep) {
-		return enhancedConfusionMatrixToCsv(sep, labelAlphabet, myValues);
-	}
-	
-	@Override
-	public String toString() {
-		return enhancedConfMatrixToString(numClasses, labelAlphabet, MATRIX_TYPE, myValues);
-	}
-	
-	public static String enhancedConfusionMatrixToCsv(String sep, LabelAlphabet labelAlphabet, int [][] myValues) {
-		int numClasses = myValues.length;
 		StringBuffer sb = new StringBuffer ();
 		int maxLabelNameLength = 0;
+		LabelAlphabet labelAlphabet = myTrial.getClassifier().getLabelAlphabet();
 		for (int i = 0; i < numClasses; i++) {
 			int len = labelAlphabet.lookupLabel(i).toString().length();
 			if (maxLabelNameLength < len)
@@ -119,21 +111,11 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		return sb.toString(); 
 	}
 	
-	public static String enhancedConfMatrixToString(int numClasses, LabelAlphabet labelAlphabet, String MATRIX_TYPE, 
-			int [][] myValues) {
-		int numCorrect = 0;
-		int total = 0;
-		for (int i = 0; i < myValues.length; i++) {
-			for (int j = 0; j < myValues.length; i++) {
-				if(i==j) {
-					numCorrect += myValues[i][j];
-				}
-				total += myValues[i][j];
-			}
-		}
-		double averageAccuracy = ((double) numCorrect) / (double) total;
+	@Override
+	public String toString() {
 		StringBuffer sb = new StringBuffer ();
 		int maxLabelNameLength = 0;
+		LabelAlphabet labelAlphabet = myTrial.getClassifier().getLabelAlphabet();
 		for (int i = 0; i < numClasses; i++) {
 			int len = labelAlphabet.lookupLabel(i).toString().length();
 			if (maxLabelNameLength < len)
@@ -187,4 +169,114 @@ public class EnhancedConfusionMatrix extends ConfusionMatrix {
 		else
 			sb.append (""+i);
 	}
+	
+	/**
+	 * Assumes square <code>myValues</code> matrix with corrects on top-left to 
+	 * lower-right diagonal
+	 * 
+	 * @param sep
+	 * @param labelAlphabet
+	 * @param myValues
+	 * @return
+	 */
+	public static String enhancedConfusionMatrixToCsv(String sep, LabelAlphabet labelAlphabet, int [][] myValues) {
+		int numClasses = myValues.length;
+		StringBuffer sb = new StringBuffer ();
+		int maxLabelNameLength = 0;
+		for (int i = 0; i < numClasses; i++) {
+			int len = labelAlphabet.lookupLabel(i).toString().length();
+			if (maxLabelNameLength < len)
+				maxLabelNameLength = len;
+		}
+
+		sb.append ("Label (R=true C=Predicted)" + sep);
+		for (int c2 = 0; c2 < numClasses; c2++) sb.append (labelAlphabet.lookupLabel(c2).toString() + sep);
+		sb.append ("total\n");
+		for (int c = 0; c < numClasses; c++) {
+			String labelName = labelAlphabet.lookupLabel(c).toString();
+			sb.append (labelName + sep);
+			for (int c2 = 0; c2 < numClasses; c2++) {
+				sb.append (myValues[c][c2] + sep);
+			}
+			sb.append (MatrixOps.sum(myValues[c]));
+			sb.append ('\n');
+		}
+		sb.append (sep);
+		int [] colsums = MatrixOps.colSum(myValues);
+		for (int c = 0; c < numClasses; c++) {
+			sb.append(colsums[c] + sep);
+		}
+		sb.append (MatrixOps.sum(myValues));
+		sb.append ('\n');
+		return sb.toString(); 
+	}
+	
+	/**
+	 * Assumes square <code>myValues</code> matrix with corrects on top-left to 
+	 * lower-right diagonal
+	 * 
+	 * @param sep
+	 * @param labelAlphabet
+	 * @param myValues
+	 * @return
+	 */
+	public static String enhancedConfMatrixToString(int numClasses, LabelAlphabet labelAlphabet, String MATRIX_TYPE, 
+			int [][] myValues) {
+		int numCorrect = 0;
+		int total = 0;
+		for (int i = 0; i < myValues.length; i++) {
+			for (int j = 0; j < myValues.length; j++) {
+				if(i==j) {
+					numCorrect += myValues[i][j];
+				}
+				total += myValues[i][j];
+			}
+		}
+		double averageAccuracy = ((double) numCorrect) / total;
+		StringBuffer sb = new StringBuffer ();
+		int maxLabelNameLength = 0;
+		for (int i = 0; i < numClasses; i++) {
+			int len = labelAlphabet.lookupLabel(i).toString().length();
+			if (maxLabelNameLength < len)
+				maxLabelNameLength = len;
+		}
+
+		sb.append (MATRIX_TYPE + ", row=true, column=predicted  accuracy=" + averageAccuracy + " Correct=" + numCorrect + "\n");
+		for (int i = 0; i < maxLabelNameLength-5+4; i++) sb.append (' ');
+		sb.append ("label");
+		for (int c2 = 0; c2 < Math.min(10,numClasses); c2++)	sb.append ("   "+c2);
+		for (int c2 = 10; c2 < numClasses; c2++)	sb.append ("  "+c2);
+		sb.append ("  |total\n");
+		for (int c = 0; c < numClasses; c++) {
+			appendJustifiedInt (sb, c, false);
+			String labelName = labelAlphabet.lookupLabel(c).toString();
+			for (int i = 0; i < maxLabelNameLength-labelName.length(); i++) sb.append (' ');
+			sb.append (" "+labelName+" ");
+			for (int c2 = 0; c2 < numClasses; c2++) {
+				appendJustifiedInt (sb, myValues[c][c2], true);
+				sb.append (' ');
+			}
+			sb.append (" |"+ MatrixOps.sum(myValues[c]));
+			sb.append ('\n');
+		}
+		sb.append ("----");
+		for (int i = 0; i < maxLabelNameLength; i++) sb.append ('-');
+		sb.append ("+");
+		for (int c = 0; c < numClasses; c++) {
+			sb.append ("----");
+		}
+		sb.append (" |");
+		sb.append ('\n');
+		sb.append ("     ");
+		int [] colsums = MatrixOps.colSum(myValues);
+		for (int i = 0; i < maxLabelNameLength; i++) sb.append (' ');
+		for (int c = 0; c < numClasses; c++) {
+			appendJustifiedInt (sb, colsums[c], true);
+			sb.append (' ');
+		}
+		sb.append (" |"+ MatrixOps.sum(myValues));
+
+		return sb.toString(); 
+	}
+
 }
