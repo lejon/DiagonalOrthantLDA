@@ -4,6 +4,7 @@
 language: java
 
 before_install:
+  - sudo apt-get install libgfortran3
   - nativepath=/home/$USER/native/Linux-amd64-64
   - sudo mkdir -p $nativepath
   -
