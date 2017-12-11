@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import cc.mallet.classify.Trial;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import xyz.lejon.MarkerIFSmokeTest;
 import xyz.lejon.bayes.models.probit.DOEvaluation;
@@ -108,7 +109,8 @@ public class DOLDASamplerTest {
 			
 			double [][] testZ;
 			if(config.getTextDatasetTestFilename()!=null) {
-				testZ = SLDA.sampleTestTopicIndicatorsMeans(config, commonSeed, dolda.getPhi());
+				Alphabet trainingAlphabet = textData != null ? textData.getAlphabet() : null;
+				testZ = SLDA.sampleTestTopicIndicatorsMeans(config, commonSeed, dolda.getPhi(), trainingAlphabet);
 			} else {
 				testZ = new double[testSetData.getX().length][0];
 			}

@@ -18,6 +18,7 @@ import cc.mallet.configuration.LDAConfiguration;
 import cc.mallet.topics.LDAGibbsSampler;
 import cc.mallet.topics.SpaliasUncollapsedParallelLDA;
 import cc.mallet.topics.TopicModelDiagnosticsPlain;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.LDAUtils;
 import joinery.DataFrame;
@@ -187,6 +188,7 @@ public class SLDA {
 					System.out.println("Vocabulary size: " + textData.getDataAlphabet().size() + "\n");
 					System.out.println("Instance list is: " + textData.size());
 					System.out.println("Loading data instances...");
+					textData.getAlphabet().stopGrowth();
 				}
 				// Sets the frequent with which top words for each topic are printed
 				//model.setShowTopicsInterval(config.getTopicInterval(DOLDAConfiguration.TOPIC_INTER_DEFAULT));
@@ -223,7 +225,8 @@ public class SLDA {
 					if(testSetData.getTextData()!=null && testSetData.getTextData().size()>0) {
 						// Here we sample the topic indicators using ordinary LDA 
 						// with the Phi we have learned during sampling!
-						testZ = sampleTestTopicIndicatorsMeans(config, commonSeed, dolda.getPhiMeans());
+						Alphabet trainingAlphabet = textData != null ? textData.getAlphabet() : null;
+						testZ = sampleTestTopicIndicatorsMeans(config, commonSeed, dolda.getPhiMeans(),trainingAlphabet);
 						
 						if(config.saveDocumentTopicMeans()) {
 							// Save the  doc-topics-means of the testset too 
@@ -238,7 +241,7 @@ public class SLDA {
 					
 					double [][] additionalCovariates = testSetData.getX();
 					if(additionalCovariates==null) {
-						// if additionalCovariates is null, teztZ NUST NOT be null
+						// even if additionalCovariates is null, teztZ MUST NOT be null
 						additionalCovariates = new double [testZ.length][0];
 					}
 					
@@ -487,19 +490,20 @@ public class SLDA {
 		}
 	}
 
-	public static double[][] sampleTestTopicIndicatorsMeans(DOLDAConfiguration config, int commonSeed, double [][] phi) throws ConfigurationException,
+	public static double[][] sampleTestTopicIndicatorsMeans(DOLDAConfiguration config, int commonSeed, double [][] phi, Alphabet trainingAlphabet) throws ConfigurationException,
 			FileNotFoundException, IOException {
 		SpaliasUncollapsedParallelLDA model = new SpaliasUncollapsedParallelLDA(new DOLDAPlainLDAConfiguration(config));
 		
 		String test_dataset_fn = config.getTextDatasetTestFilename();
 		System.out.println("Using test dataset: " + test_dataset_fn);
 
-		InstanceList instances = LDAUtils.loadInstancesPrune(test_dataset_fn, 
-				config.getStoplistFilename("stoplist.txt"), config.getRareThreshold(LDAConfiguration.RARE_WORD_THRESHOLD), config.keepNumbers());
+		InstanceList instances = LDAUtils.loadDataset(new DOLDAPlainLDAConfiguration(config), test_dataset_fn, trainingAlphabet);
+		//InstanceList instances = LDAUtils.loadInstancesPrune(test_dataset_fn, 
+		//		config.getStoplistFilename("stoplist.txt"), config.getRareThreshold(LDAConfiguration.RARE_WORD_THRESHOLD), config.keepNumbers());
 		
 		model.setRandomSeed(commonSeed);
 		System.out.println("Start seed: " + model.getStartSeed());
-				System.out.println(String.format("Rare word threshold: %d", config.getRareThreshold(LDAConfiguration.RARE_WORD_THRESHOLD)));
+		System.out.println(String.format("Rare word threshold: %d", config.getRareThreshold(LDAConfiguration.RARE_WORD_THRESHOLD)));
 
 		System.out.println("Testset Vocabulary size: " + instances.getDataAlphabet().size() + "\n");
 		System.out.println("No. Test instances: " + instances.size());
@@ -513,7 +517,7 @@ public class SLDA {
 
 		// Runs the model
 		model.setPhi(MatrixOps.clone(phi), instances.getAlphabet(), instances.getTargetAlphabet());
-		model.sampleZGivenPhi(LDAConfiguration.NO_ITER_DEFAULT);
+		model.sampleZGivenPhi(config.getNoIterations(LDAConfiguration.NO_ITER_DEFAULT));
 		
 		System.out.println(
 				String.format("SpaliasUncollapsed Parallell LDA (%d batches).", 
