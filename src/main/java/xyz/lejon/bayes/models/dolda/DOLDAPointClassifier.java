@@ -131,11 +131,6 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		return scores;
 	}
 
-	@Override
-	public LabelAlphabet getLabelAlphabet() {
-		return super.getLabelAlphabet();
-	}
-
 	protected int findXrow(String instanceId, String [] rowIds) {
 		int idx = 0;
 		for(String iid : rowIds) {
