@@ -29,6 +29,7 @@ public class LinearRegressionTest {
 	public void testLinearRegressionHS() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -90,6 +91,7 @@ public class LinearRegressionTest {
 	public void testLinearRegressionNormal() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -152,6 +154,7 @@ public class LinearRegressionTest {
 	public void testOLS() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -213,6 +216,7 @@ public class LinearRegressionTest {
 	public void testOLSSim() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -268,6 +272,7 @@ public class LinearRegressionTest {
 	public void testLinearRegressionNormalSimulated() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -323,6 +328,7 @@ public class LinearRegressionTest {
 	public void testLinearRegressionHSSimulatedEJML() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
@@ -378,6 +384,7 @@ public class LinearRegressionTest {
 	public void testLinearRegressionHSSimulatedBLAS() throws IOException, ParseException, ConfigurationException {
 		String [] args = {"--run_cfg=src/main/resources/configuration/LinearRegressionUnitTest.cfg"};
 		OLSCommandLineParser cp = new OLSCommandLineParser(args);
+		OLSConfigFactory.setMainConfiguration(null);
 		OLSConfiguration config = (OLSConfiguration) OLSConfigFactory.getMainConfiguration(cp);
 		LoggingUtils lu = new LoggingUtils();
 		config.setLoggingUtil(lu);
