@@ -303,7 +303,11 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 	public DOLDADataSet loadCombinedTestSet() throws IOException {
 		String textdataset_fn = getTextDatasetTestFilename(); 
 		DataSet testDataSet =  super.loadTestSet();
-		System.out.println("Loading text data from file: " + textdataset_fn);
+		if(textdataset_fn!=null) {
+			System.out.println("Loading test text data from file: " + textdataset_fn);
+		} else {
+			System.out.println("Variable 'textdataset_train' is not defined, NOT using test text data...");
+		}
 		
 		String stoplistFn = getStringProperty("stoplist");
 		if(!haveFilename(stoplistFn)) {
