@@ -382,4 +382,14 @@ public class DOLDAPlainLDAConfiguration extends SubConfig implements LDAConfigur
 	public boolean saveDocumentTopicDiagnostics() {
 		return parent.saveDocumentTopicDiagnostics();
 	}
+
+	@Override
+	public Integer getHyperparamOptimInterval(int defaultVal) {
+		return parent.getHyperparamOptimInterval(defaultVal);
+	}
+
+	@Override
+	public boolean useSymmetricAlpha(boolean defaultVal) {
+		return parent.useSymmetricAlpha(defaultVal);
+	}
 }

@@ -54,7 +54,7 @@ public abstract class EDOLDA extends DOLDAGibbsSampler {
 	}
 
 	@Override
-	protected void sampleTopicAssignmentsParallel(LDADocSamplingContext ctx) {
+	protected double [] sampleTopicAssignmentsParallel(LDADocSamplingContext ctx) {
 		FeatureSequence tokens = ctx.getTokens();
 		LabelSequence topics = ctx.getTopics();
 		int myBatch = ctx.getMyBatch();
@@ -65,12 +65,12 @@ public abstract class EDOLDA extends DOLDAGibbsSampler {
 		final int docLength = tokens.getLength();
 		double Nd = (double) docLength;
 
-		if(docLength==0) return;
+		if(docLength==0) return null;
 
 		int [] tokenSequence = tokens.getFeatures();
 		int [] oneDocTopics = topics.getFeatures();
 
-		int[] localTopicCounts = new int[numTopics];
+		double[] localTopicCounts = new double[numTopics];
 
 		// Find the non-zero words and topic counts that we have in this document
 		for (int position = 0; position < docLength; position++) {
@@ -151,7 +151,7 @@ public abstract class EDOLDA extends DOLDAGibbsSampler {
 					// If scaling goes "overboard" set it to 'a large value'
 					if(Double.isInfinite(scaling)) scaling = 10_000;
 				}
-				score = (localTopicCounts[topic] + alpha) * phi[topic][type] * scaling;
+				score = (localTopicCounts[topic] + alpha[topic]) * phi[topic][type] * scaling;
 				if(score<0.0 || Double.isNaN(score)) { 
 					if(score<0.0 || Double.isNaN(score)) { 
 						throw new IllegalStateException("Got a broken score: " 
@@ -209,5 +209,6 @@ public abstract class EDOLDA extends DOLDAGibbsSampler {
 			 */
 			increment(myBatch,newTopic,type);
 		}
+		return localTopicCounts;
 	}
 }

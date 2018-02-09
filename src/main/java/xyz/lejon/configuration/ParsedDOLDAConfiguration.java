@@ -685,4 +685,16 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 		String key = "log_likelihood_type";
 		return getStringProperty(key);
 	}
+
+	@Override
+	public Integer getHyperparamOptimInterval(int defaultValue) {
+		return getInteger("hyperparam_optim_interval",defaultValue);
+	}
+
+	@Override
+	public boolean useSymmetricAlpha(boolean defaultAlpha) {
+		String key = "symmetric_alpha";
+		Boolean symAlpha = getBooleanPropertyOrNull(key);
+		return symAlpha == null ? defaultAlpha : symAlpha;
+	}
 }

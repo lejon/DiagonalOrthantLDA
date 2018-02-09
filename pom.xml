@@ -15,7 +15,8 @@
 	<!-- v1.7.7: Fixed bug with id column selection -->
 	<!-- v1.7.8: Added document topic diagnostics to SLDA -->
 	<!-- v1.7.9: Fixed SLDA + Travis. Use PCPLDA from Jitpack -->
-	<version>1.7.9</version>
+	<!-- v1.7.10: Hyperparameter optimization (of LDA alpha and beta) with PCLDA 6.0.1 -->
+	<version>1.7.10</version>
 	<name>DOLDA</name>
 	<description>Supervised LDA classification using DO probit models</description>
 
@@ -107,7 +108,7 @@
 		<dependency>
     		<groupId>com.github.lejon</groupId>
     		<artifactId>PartiallyCollapsedLDA</artifactId>
-    		<version>v5.2.2</version>
+    		<version>v6.0.1</version>
 		</dependency>
 	</dependencies>
 	

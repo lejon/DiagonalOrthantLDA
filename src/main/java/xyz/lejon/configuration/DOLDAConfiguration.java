@@ -209,4 +209,8 @@ public interface DOLDAConfiguration extends DOConfiguration {
 	boolean saveDocumentTopicDiagnostics();
 
 	String likelihoodType();
+
+	Integer getHyperparamOptimInterval(int defaultVal);
+
+	boolean useSymmetricAlpha(boolean defaultVal);
 }
