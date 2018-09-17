@@ -63,4 +63,6 @@ public interface DOConfiguration {
 	Map<Integer, String> getIdMap();
 	
 	int getIterationPrintInterval();
+
+	public void setLabelMap(Map<String, Integer> mapSI);
 }

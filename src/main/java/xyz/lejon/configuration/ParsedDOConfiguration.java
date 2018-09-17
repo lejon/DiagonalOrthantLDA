@@ -913,4 +913,9 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 	public int getIterationPrintInterval() {
 		return getInteger("iteration_print_interval",ITERATION_PRINT_INTERVAL_DEFAULT).intValue();
 	}
+
+	@Override
+	public void setLabelMap(Map<String, Integer> mapSI) {
+		throw new IllegalStateException("Cant set label map in Parsed config.");
+	}
 }
