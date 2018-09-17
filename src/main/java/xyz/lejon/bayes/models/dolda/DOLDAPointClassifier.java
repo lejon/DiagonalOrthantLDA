@@ -336,8 +336,10 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		
 		String foldPrefix = "fold-";
 		
+		boolean haveText = !fakeTextData;
+		
 		// Save document topic diagnostics
-		if(config.saveDocumentTopicDiagnostics()) {
+		if(config.saveDocumentTopicDiagnostics() && haveText) {
 			if(dolda instanceof LDAGibbsSampler) {			
 				LDAGibbsSampler model = (LDAGibbsSampler) dolda;
 				int requestedWords = config.getNrTopWords(LDAConfiguration.NO_TOP_WORDS_DEFAULT);
@@ -354,7 +356,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 			}
 		}
 		
-		if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT)) {
+		if(config.savePhiMeans(LDAConfiguration.SAVE_PHI_MEAN_DEFAULT) && haveText) {
 			String phiMeanFn = config.getPhiMeansOutputFilename();
 			double [][] means = dolda.getPhiMeans();
 			if(means!=null) {
@@ -380,7 +382,7 @@ public class DOLDAPointClassifier extends Classifier implements DOLDAClassifier 
 		}
 		
 		// Save example doc-topic means if that is turned on in config
-		if(config.saveDocumentTopicMeans() && config.getTextDatasetTrainFilename()!=null) {
+		if(config.saveDocumentTopicMeans() && haveText) {
 			String dtFn = config.getDocumentTopicMeansOutputFilename();
 			ExperimentUtils.saveDocTopicMeans(lgDir, dolda.getZbar(), foldPrefix + fold + "-" + dtFn);
 			ExperimentUtils.saveDocTopicMeans(lgDir, sampledSupervisedTestTopics, foldPrefix + fold + "-TESTSET-" + dtFn);
