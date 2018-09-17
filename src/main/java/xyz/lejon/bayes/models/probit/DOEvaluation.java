@@ -18,10 +18,10 @@ public class DOEvaluation {
 	}
 
 	public static EvalResult evaluate(double[][] xs, int[] ys, double[][] betas, boolean verbose) {
-		return evaluateMaxA(xs,ys,betas,false);
+		return evaluateMaxA(xs,ys,betas,verbose);
 	}
 
-	public static EvalResult evaluateMaxA(double[][] xs, int[] ys, double[][] betas, boolean verbose) {
+	protected static EvalResult evaluateMaxA(double[][] xs, int[] ys, double[][] betas, boolean verbose) {
 		int noCorrect = 0;
 		int noClassesInTrainingset = betas.length;
 		int [] predClass = new int[xs.length];
@@ -45,6 +45,25 @@ public class DOEvaluation {
 		}
 		int [][] confusionMatrix = buildConfusionMatrix(realClass, predClass, noClassesInTrainingset);
 		return new EvalResult(predClass, noCorrect, confusionMatrix);
+	}
+	
+	public static EvalResult predict(double[][] xs, double[][] betas) {
+		return predictMaxA(xs,betas);
+	}
+	
+	protected static EvalResult predictMaxA(double[][] xs, double[][] betas) {
+		int [] predClass = new int[xs.length];
+		for (int row = 0; row < xs.length; row++) {
+			double [][] xrow = new double[1][xs[row].length];
+			xrow[0] = xs[row];
+			DenseMatrix64F xrowd = new DenseMatrix64F(xrow);
+			DenseMatrix64F Betas = new DenseMatrix64F(betas);
+			DenseMatrix64F aHatd = new DenseMatrix64F(xrowd.numRows,Betas.numRows);
+			CommonOps.multTransB(xrowd, Betas, aHatd);
+			double [] aHat = MatrixOps.extractDoubleVector(aHatd);
+			predClass[row] = MatrixOps.maxIdx(aHat);
+		}
+		return new EvalResult(predClass, -1, null);
 	}
 	
 	static int[][] buildConfusionMatrix(int[] realClass, int[] predClass, int noClassesInTrainingset) {

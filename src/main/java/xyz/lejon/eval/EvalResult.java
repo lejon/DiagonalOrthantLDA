@@ -17,5 +17,28 @@ public class EvalResult {
 		this.noCorrect = noCorrect;
 		this.confusionMatrix = confusionMatrix;
 	}
-	
+
+	public int[] getPredictedLabels() {
+		return predictedLabels;
+	}
+
+	public void setPredictedLabels(int[] predictedLabels) {
+		this.predictedLabels = predictedLabels;
+	}
+
+	public int getNoCorrect() {
+		return noCorrect;
+	}
+
+	public void setNoCorrect(int noCorrect) {
+		this.noCorrect = noCorrect;
+	}
+
+	public int[][] getConfusionMatrix() {
+		return confusionMatrix;
+	}
+
+	public void setConfusionMatrix(int[][] confusionMatrix) {
+		this.confusionMatrix = confusionMatrix;
+	}
 }
