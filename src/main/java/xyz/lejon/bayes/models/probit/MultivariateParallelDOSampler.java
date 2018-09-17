@@ -5,6 +5,8 @@ import static org.ejml.ops.CommonOps.multInner;
 import static org.ejml.ops.CommonOps.multTransA;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
@@ -25,7 +27,15 @@ public class MultivariateParallelDOSampler extends AbstractParallelDOSampler imp
 	public MultivariateParallelDOSampler(DOConfiguration config, double [][] xs, int [] ys) throws IOException {
 		this.xs = xs;
 		this.ys = ys;
-		this.noClasses = config.getLabelMap().keySet().size();
+		
+		Map<Integer,Boolean> idMap = new HashMap<>();
+		for(int y : ys) {
+			if(idMap.get(y)==null) {
+				idMap.put(y, true);
+			}
+		}
+		
+		this.noClasses = idMap.size();
 		setupSampler(config, xs, noClasses);
 		double [] tmpMean = new double[noCovariates];
 		mvns = new FastMVNSamplerEJML(tmpMean, Stilde);
