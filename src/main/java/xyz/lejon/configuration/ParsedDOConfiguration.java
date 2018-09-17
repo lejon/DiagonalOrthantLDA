@@ -428,14 +428,14 @@ public class ParsedDOConfiguration extends SubConfig implements DOConfiguration,
 
 		String refCatString = getStringProperty("reference_categories");
 		Map<String,String> refCats = parseReferenceCategories(refCatString);
-		double [][] xs = Conversion.toModelMatrix(df, 0.0,trainingSet.getOrigData(), false, refCats);
+		double [][] xs = Conversion.toModelMatrix(df, 0.0, trainingSet.getOrigData(), false, refCats);
 		
 		if(scale_log) xs = MatrixOps.log(xs, true);
 		if(normalize) xs = MatrixOps.centerAndScale(xs);
 		if(addIntercept) xs = MatrixOps.addIntercept(xs);
 
 		if(xs[0].length!=trainingSet.getX()[0].length) {
-			throw new IllegalArgumentException("Trainingset and testset doesn not have the same number of covariates " 
+			throw new IllegalArgumentException("Trainingset and testset does not have the same number of covariates " 
 					+ xs[0].length + " != " + trainingSet.getX()[0].length 
 					+ ". This can occur if there are covariates with nominal attributes in the test set which are not in the trainingset");
 		}

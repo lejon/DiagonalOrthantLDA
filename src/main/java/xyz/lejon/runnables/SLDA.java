@@ -157,7 +157,7 @@ public class SLDA {
 				String dataset_fn = config.getTextDatasetTrainFilename();
 				System.out.println("Using dataset: " + dataset_fn);
 
-				DOLDADataSet trainingSetData =config.loadCombinedTrainingSet();
+				DOLDADataSet trainingSetData = config.loadCombinedTrainingSet();
 				DOLDADataSet testSetData = config.loadCombinedTestSet();
 				
 				// If we have a test dataset, ensure that it is aligned (i.e has a subset of the trainingset labels)
