@@ -353,9 +353,9 @@ public class ParsedDOLDAConfiguration extends ParsedDOConfiguration implements D
 		
 		// Ensure that the ordering of classlabels from our loading of data
 		// matches that of how MALLET sees them
-		if(testInstances!=null && testSet!=null) {
-			ensureMatchingClasslabels(testSet, testInstances);
-		}
+//		if(testInstances!=null && testSet!=null) {
+//			ensureMatchingClasslabels(testSet, testInstances);
+//		}
 
 		
 		return new DOLDADataSet(testSet, testInstances);
