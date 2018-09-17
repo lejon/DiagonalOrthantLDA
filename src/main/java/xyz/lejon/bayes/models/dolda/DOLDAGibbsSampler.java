@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.jblas.DoubleMatrix;
@@ -41,6 +42,8 @@ import xyz.lejon.utils.MatrixOps;
  *
  */
 public abstract class DOLDAGibbsSampler extends UncollapsedParallelLDA implements DOLDA, DOLDAWithCallback {
+	
+	protected static Logger logger = Logger.getLogger(DOLDAGibbsSampler.class.getName());
 
 	DOLDAIterationCallback iterationCallback = null;
 	private static final long serialVersionUID = 1L;
