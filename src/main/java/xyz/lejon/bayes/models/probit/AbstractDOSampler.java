@@ -65,7 +65,9 @@ public abstract class AbstractDOSampler {
 		noRows = xs.length;
 		iterinter = config.getIterationPrintInterval();
 		
-		loggingPath = config.getLoggingUtil().getLogDir().getAbsolutePath();
+		loggingPath = config.getLoggingUtil() != null ?
+				config.getLoggingUtil().getLogDir().getAbsolutePath() :
+				"/tmp/";
 		if(loggingPath!=null && loggingPath.length()>0) {
 			logLoglikelihood = true;
 		}
